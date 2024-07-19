@@ -18,11 +18,7 @@ return [
     |
     */
 
-<<<<<<< HEAD
-    'driver' => env('SESSION_DRIVER', 'file'),
-=======
     'driver' => env('SESSION_DRIVER', 'database'),
->>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
     /*
     |--------------------------------------------------------------------------
@@ -37,12 +33,7 @@ return [
 
     'lifetime' => env('SESSION_LIFETIME', 120),
 
-<<<<<<< HEAD
-    'expire_on_close' => false,
-
-=======
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
->>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     /*
     |--------------------------------------------------------------------------
     | Session Encryption
@@ -54,11 +45,7 @@ return [
     |
     */
 
-<<<<<<< HEAD
-    'encrypt' => false,
-=======
    'encrypt' => env('SESSION_ENCRYPT', false),
->>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
     /*
     |--------------------------------------------------------------------------
@@ -97,11 +84,7 @@ return [
     |
     */
 
-<<<<<<< HEAD
-    'table' => 'sessions',
-=======
     'table' => env('SESSION_TABLE', 'sessions'),
->>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
     /*
     |--------------------------------------------------------------------------
@@ -158,11 +141,7 @@ return [
     |
     */
 
-<<<<<<< HEAD
-    'path' => '/',
-=======
     'path' => env('SESSION_PATH', '/'),
->>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
     /*
     |--------------------------------------------------------------------------
@@ -201,11 +180,7 @@ return [
     |
     */
 
-<<<<<<< HEAD
-    'http_only' => true,
-=======
     'http_only' => env('SESSION_HTTP_ONLY', true),
->>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
     /*
     |--------------------------------------------------------------------------
@@ -220,11 +195,7 @@ return [
     |
     */
 
-<<<<<<< HEAD
-    'same_site' => 'lax',
-=======
     'same_site' => env('SESSION_SAME_SITE', 'lax'),
->>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
     /*
     |--------------------------------------------------------------------------
@@ -237,10 +208,6 @@ return [
     |
     */
 
-<<<<<<< HEAD
-    'partitioned' => false,
-=======
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
->>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
 ];
