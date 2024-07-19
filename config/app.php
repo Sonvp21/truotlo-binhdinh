@@ -70,7 +70,11 @@ return [
     |
     */
 
+<<<<<<< HEAD
     'timezone' => 'UTC',
+=======
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
     /*
     |--------------------------------------------------------------------------
@@ -83,6 +87,7 @@ return [
     |
     */
 
+<<<<<<< HEAD
     'locale' => 'en',
 
     /*
@@ -121,11 +126,26 @@ return [
     | will not be safe. Please do this before deploying an application!
     |
     */
+=======
+    'locale' => env('APP_LOCALE', 'en'),
+
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+
+    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
     'key' => env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
 
+<<<<<<< HEAD
+=======
+    'previous_keys' => [
+        ...array_filter(
+            explode(',', env('APP_PREVIOUS_KEYS', ''))
+        ),
+    ],
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver
@@ -140,8 +160,13 @@ return [
     */
 
     'maintenance' => [
+<<<<<<< HEAD
         'driver' => 'file',
         // 'store' => 'redis',
+=======
+        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
+        'store' => env('APP_MAINTENANCE_STORE', 'database'),
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     ],
 
     /*

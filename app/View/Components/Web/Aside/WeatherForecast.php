@@ -8,6 +8,7 @@ use App\Services\WeatherForecastService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\Component;
+<<<<<<< HEAD
 use Illuminate\View\View;
 
 class WeatherForecast extends Component
@@ -20,6 +21,20 @@ class WeatherForecast extends Component
     public Collection $districts;
 
     public function __construct()
+=======
+use Illuminate\View\View; // Make sure to import View class from Illuminate\View
+
+class WeatherForecast extends Component
+{
+    public $commune_id = 92;
+    public $district_id = 7;
+    public $commune = null; // Declare as nullable
+
+    public $communes;
+    public $districts;
+
+    public function mount()
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     {
         $this->communes = Cache::rememberForever(
             'commune-daily',
@@ -44,7 +59,11 @@ class WeatherForecast extends Component
         });
     }
 
+<<<<<<< HEAD
     public function updatedDistrictId($id): void
+=======
+    public function updatedDistrictId($id)
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     {
         $this->communes = Commune::query()
             ->where('district_id', $id)
@@ -54,11 +73,16 @@ class WeatherForecast extends Component
         $this->commune_id = optional($this->commune)->id;
     }
 
+<<<<<<< HEAD
     public function updatedCommuneId($id): void
+=======
+    public function updatedCommuneId($id)
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     {
         $this->commune = Commune::find($id);
     }
 
+<<<<<<< HEAD
     public function render(): View
     {
         if (!$this->commune) {
@@ -76,4 +100,41 @@ class WeatherForecast extends Component
             }),
         ]);
     }
+=======
+    public function render(): View // Adjust the return type to View
+    {
+        $currentForecast = null;
+        $dailyForecast = null;
+
+        if ($this->commune) {
+            $currentForecast = cache()->remember('sidebar-current-'.$this->commune->id, 900, function () {
+                return app(WeatherForecastService::class)->getCurrent($this->commune->only('lat', 'lon'));
+            });
+
+            $dailyForecast = cache()->remember('sidebar-daily-'.$this->commune->id, 900, function () {
+                return app(WeatherForecastService::class)->getDaily($this->commune->only('lat', 'lon'));
+            });
+        }
+
+        return view('components.web.aside.weather-forecast', [
+            'currentForecast' => $currentForecast,
+            'dailyForecast' => $dailyForecast,
+            'placeholder' => $this->placeholder(),
+        ]);
+    }
+
+    public function placeholder()
+    {
+        return <<<'HTML'
+            <div class="h-auto overflow-hidden rounded border border-sky-600 bg-sky-100 shadow">
+                <h2 class="flex h-12 items-center bg-sky-600 px-4 text-sm font-bold uppercase shadow">Weather Forecast</h2>
+                <div class="h-[345px] flex items-center justify-center">
+                    <svg class="size-6 animate-spin text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+            </div>
+            HTML;
+    }
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 }

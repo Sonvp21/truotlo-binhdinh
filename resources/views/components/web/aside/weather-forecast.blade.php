@@ -6,17 +6,29 @@
                 <div class="pr-2">
                     <select wire:model.live="district_id"
                         class="block w-full border-none bg-transparent px-2 py-3 text-sm text-gray-600 focus:outline-none focus:ring-0">
+<<<<<<< HEAD
                         @foreach ($districts as $district)
                             <option value="{{ $district->id }}">{{ $district->name }}</option>
                         @endforeach
+=======
+                        {{-- @foreach ($districts as $district)
+                            <option value="{{ $district->id }}">{{ $district->name }}</option>
+                        @endforeach --}}
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
                     </select>
                 </div>
                 <div class="pr-2">
                     <select wire:model.live="commune_id"
                         class="block w-full border-none bg-transparent px-2 py-3 text-sm text-gray-600 focus:outline-none focus:ring-0">
+<<<<<<< HEAD
                         @foreach ($communes as $comm)
                             <option value="{{ $comm->id }}">{{ $comm->name }}</option>
                         @endforeach
+=======
+                        {{-- @foreach ($communes as $comm)
+                            <option value="{{ $comm->id }}">{{ $comm->name }}</option>
+                        @endforeach --}}
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
                     </select>
                 </div>
             </div>
@@ -52,6 +64,7 @@
                     <div class="scrollbar-track-blue-300 scrollbar-thumb-blue-500">
                         <div class="scrollbar-thin w-full overflow-auto">
                             <div class="flex flex-row overflow-y-scroll">
+<<<<<<< HEAD
                                 @if ($dailyForecast)
                                     @foreach ($dailyForecast as $forecast)
                                         <div class="flex-none space-y-2 px-2 text-center text-sm text-gray-700">
@@ -77,6 +90,26 @@
                                     <p>No daily forecast available.</p>
                                 @endif
 
+=======
+                                {{-- @foreach ($dailyForecast as $forecast)
+                                    <div class="flex-none space-y-2 px-2 text-center text-sm text-gray-700">
+                                        <div class="flex flex-col">
+                                            <span
+                                                class="font-bold">{{ $forecast->obs_time->translatedFormat('D') }}</span>
+                                            <span
+                                                class="text-xs">{{ $forecast->obs_time->translatedFormat('H') }}</span>
+                                        </div>
+                                        <div>
+                                            <img class="m-auto w-8 flex-none" src="{{ $forecast->icon_code }}"
+                                                alt="{{ $forecast->icon_code }}" />
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="font-bold">{{ $forecast->high_temp }}&deg;</span>
+                                            <span class="text-xs text-slate-500">{{ $forecast->low_temp }}&deg;</span>
+                                        </div>
+                                    </div>
+                                @endforeach --}}
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
                             </div>
                         </div>
                     </div>
