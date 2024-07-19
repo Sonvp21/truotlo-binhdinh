@@ -1,0 +1,28 @@
+<?php
+
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FlashReportController;
+use App\Http\Controllers\MapController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('web.home');
+});
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::get('/gioi-thieu', [AboutController::class, 'index'])->name('about');
+Route::get('/thong-tin-tuot-lo', [FlashReportController::class, 'index'])->name('flash-report');
+Route::get('/bando-gis', [MapController::class, 'index'])->name('map');
+Route::get('/lien-he', [ContactController::class, 'index'])->name('contact');
+
+require __DIR__.'/admin.php';
