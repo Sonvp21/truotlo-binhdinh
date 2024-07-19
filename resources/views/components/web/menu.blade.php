@@ -52,6 +52,13 @@
         <li class="h-full">
             <a
                 class="flex h-full items-center px-4 py-3 hover:bg-sky-700 hover:text-white"
+                href="/bieudo"
+                >BIỂU ĐỒ</a
+            >
+        </li>
+        <li class="h-full">
+            <a
+                class="flex h-full items-center px-4 py-3 hover:bg-sky-700 hover:text-white"
                 wire:navigate
                 href="/lien-he"
                 >LIÊN HỆ</a
