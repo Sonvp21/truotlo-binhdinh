@@ -25,6 +25,26 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+<<<<<<< HEAD
+    <x-rich-text::styles
+        theme="richtextlaravel"
+        data-turbo-track="false"
+    />
+</head>
+<body class="text-gray-900 font-sans antialiased">
+    <div class="bg-gray-100 flex min-h-screen flex-col items-center pt-6 sm:justify-center sm:pt-0">
+        <div>
+            <a href="/">
+                <img
+                    class="text-gray-500 h-20 w-auto fill-current"
+                    src="{{ asset('files/images/logo.png') }}"
+                    alt=""
+                />
+            </a>
+        </div>
+
+        <div class="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg">
+=======
 </head>
 <body class="font-sans text-gray-900 antialiased">
     <div class="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0 dark:bg-gray-900">
@@ -35,6 +55,7 @@
         </div>
 
         <div class="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800">
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
             {{ $slot }}
         </div>
     </div>

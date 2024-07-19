@@ -8,6 +8,20 @@ use App\Services\WeatherForecastService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\Component;
+<<<<<<< HEAD
+use Illuminate\View\View;
+
+class WeatherForecast extends Component
+{
+    public int $commune_id = 92;
+    public int $district_id = 7;
+    public ?Commune $commune = null; // Declare as nullable
+
+    public Collection $communes;
+    public Collection $districts;
+
+    public function __construct()
+=======
 use Illuminate\View\View; // Make sure to import View class from Illuminate\View
 
 class WeatherForecast extends Component
@@ -20,6 +34,7 @@ class WeatherForecast extends Component
     public $districts;
 
     public function mount()
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     {
         $this->communes = Cache::rememberForever(
             'commune-daily',
@@ -44,7 +59,11 @@ class WeatherForecast extends Component
         });
     }
 
+<<<<<<< HEAD
+    public function updatedDistrictId($id): void
+=======
     public function updatedDistrictId($id)
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     {
         $this->communes = Commune::query()
             ->where('district_id', $id)
@@ -54,11 +73,34 @@ class WeatherForecast extends Component
         $this->commune_id = optional($this->commune)->id;
     }
 
+<<<<<<< HEAD
+    public function updatedCommuneId($id): void
+=======
     public function updatedCommuneId($id)
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     {
         $this->commune = Commune::find($id);
     }
 
+<<<<<<< HEAD
+    public function render(): View
+    {
+        if (!$this->commune) {
+            return view('components.web.aside.weather-forecast')->with('currentForecast', null)->with('dailyForecast', null);
+        }
+
+        $weatherForecastService = app(WeatherForecastService::class);
+
+        return view('components.web.aside.weather-forecast', [
+            'currentForecast' => cache()->remember('sidebar-current-'.$this->commune->id, 900, function () use ($weatherForecastService) {
+                return $weatherForecastService->getCurrent($this->commune->only('lat', 'lon'));
+            }),
+            'dailyForecast' => cache()->remember('sidebar-daily-'.$this->commune->id, 900, function () use ($weatherForecastService) {
+                return $weatherForecastService->getDaily($this->commune->only('lat', 'lon'));
+            }),
+        ]);
+    }
+=======
     public function render(): View // Adjust the return type to View
     {
         $currentForecast = null;
@@ -94,4 +136,5 @@ class WeatherForecast extends Component
             </div>
             HTML;
     }
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 }

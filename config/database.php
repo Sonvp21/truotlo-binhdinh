@@ -15,7 +15,11 @@ return [
     |
     */
 
+<<<<<<< HEAD
+    'default' => env('DB_CONNECTION', 'mysql'),
+=======
     'default' => env('DB_CONNECTION', 'sqlite'),
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
 
     /*
     |--------------------------------------------------------------------------

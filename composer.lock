@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
+    "content-hash": "c5d2d65c69047077d3fd2d92c5f66d7e",
+=======
     "content-hash": "db957d60b632ee04b5ea1a579000ac8c",
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -6013,6 +6017,8 @@
             "time": "2020-07-09T08:09:16+00:00"
         },
         {
+<<<<<<< HEAD
+=======
             "name": "laravel/breeze",
             "version": "v1.29.1",
             "source": {
@@ -6075,6 +6081,7 @@
             "time": "2024-03-04T14:35:21+00:00"
         },
         {
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a
             "name": "laravel/pint",
             "version": "v1.16.2",
             "source": {

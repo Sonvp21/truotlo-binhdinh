@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+<div>
+    siba ne<!-- Nothing worth having comes easy. - Theodore Roosevelt -->
+</div>
+=======
 <div class="z-20 bg-white shadow-[6px_0_6px_-7px_#333]">
     <div
         x-cloak
@@ -276,3 +281,4 @@
     </div>
     <x-web.map.control />
 </div>
+>>>>>>> 683bbfeddd004eb38bb596b7f24d4996019df57a

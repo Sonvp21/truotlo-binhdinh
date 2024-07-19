@@ -6,17 +6,17 @@
                 <div class="pr-2">
                     <select wire:model.live="district_id"
                         class="block w-full border-none bg-transparent px-2 py-3 text-sm text-gray-600 focus:outline-none focus:ring-0">
-                        {{-- @foreach ($districts as $district)
+                        @foreach ($districts as $district)
                             <option value="{{ $district->id }}">{{ $district->name }}</option>
-                        @endforeach --}}
+                        @endforeach
                     </select>
                 </div>
                 <div class="pr-2">
                     <select wire:model.live="commune_id"
                         class="block w-full border-none bg-transparent px-2 py-3 text-sm text-gray-600 focus:outline-none focus:ring-0">
-                        {{-- @foreach ($communes as $comm)
+                        @foreach ($communes as $comm)
                             <option value="{{ $comm->id }}">{{ $comm->name }}</option>
-                        @endforeach --}}
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -52,24 +52,31 @@
                     <div class="scrollbar-track-blue-300 scrollbar-thumb-blue-500">
                         <div class="scrollbar-thin w-full overflow-auto">
                             <div class="flex flex-row overflow-y-scroll">
-                                {{-- @foreach ($dailyForecast as $forecast)
-                                    <div class="flex-none space-y-2 px-2 text-center text-sm text-gray-700">
-                                        <div class="flex flex-col">
-                                            <span
-                                                class="font-bold">{{ $forecast->obs_time->translatedFormat('D') }}</span>
-                                            <span
-                                                class="text-xs">{{ $forecast->obs_time->translatedFormat('H') }}</span>
+                                @if ($dailyForecast)
+                                    @foreach ($dailyForecast as $forecast)
+                                        <div class="flex-none space-y-2 px-2 text-center text-sm text-gray-700">
+                                            <div class="flex flex-col">
+                                                <span
+                                                    class="font-bold">{{ $forecast->obs_time->translatedFormat('D') }}</span>
+                                                <span
+                                                    class="text-xs">{{ $forecast->obs_time->translatedFormat('H') }}</span>
+                                            </div>
+                                            <div>
+                                                <img class="m-auto w-8 flex-none" src="{{ $forecast->icon_code }}"
+                                                    alt="{{ $forecast->icon_code }}" />
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="font-bold">{{ $forecast->high_temp }}&deg;</span>
+                                                <span
+                                                    class="text-xs text-slate-500">{{ $forecast->low_temp }}&deg;</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <img class="m-auto w-8 flex-none" src="{{ $forecast->icon_code }}"
-                                                alt="{{ $forecast->icon_code }}" />
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="font-bold">{{ $forecast->high_temp }}&deg;</span>
-                                            <span class="text-xs text-slate-500">{{ $forecast->low_temp }}&deg;</span>
-                                        </div>
-                                    </div>
-                                @endforeach --}}
+                                    @endforeach
+                                @else
+                                    <!-- Xử lý khi $dailyForecast là null -->
+                                    <p>No daily forecast available.</p>
+                                @endif
+
                             </div>
                         </div>
                     </div>
