@@ -233,66 +233,75 @@
     setupToggleLegend(showChartB, 'toggleLegendB', 'legendContainerB');
 
     // Xử lý form chọn khoảng thời gian
-    document.getElementById('dateRangeForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const startDate = document.getElementById('start_date').value;
-        const endDate = document.getElementById('end_date').value;
+document.getElementById('dateRangeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const startDate = document.getElementById('start_date').value;
+    const startTime = document.getElementById('start_time').value;
+    const endDate = document.getElementById('end_date').value;
+    const endTime = document.getElementById('end_time').value;
+    
+    // Chuyển hướng với tham số mới
+    window.location.href = `${window.location.pathname}?start_date=${startDate}&start_time=${startTime}&end_date=${endDate}&end_time=${endTime}`;
+});
+
+// Lọc dữ liệu theo thời gian
+function filterDataByDateRange(datasets, startDate, startTime, endDate, endTime) {
+    const start = new Date(`${startDate}T${startTime}`);
+    const end = new Date(`${endDate}T${endTime}`);
+
+    return datasets.map(dataset => {
+        if (dataset.label === 'Điểm chuẩn') return dataset;
         
-        // Chuyển hướng với tham số mới
-        window.location.href = `${window.location.pathname}?start_date=${startDate}&end_date=${endDate}`;
-    });
-
-    // Lọc dữ liệu theo thời gian
-    function filterDataByDateRange(datasets, startDate, endDate) {
-        return datasets.map(dataset => {
-            if (dataset.label === 'Điểm chuẩn') return dataset;
-            
-            const filteredData = dataset.data.filter(point => {
-                const pointDate = new Date(dataset.label);
-                return pointDate >= new Date(startDate) && pointDate <= new Date(endDate);
-            });
-            
-            return {...dataset, data: filteredData};
-        }).filter(dataset => dataset.data.length > 0 || dataset.label === 'Điểm chuẩn');
-    }
-
-    // Áp dụng bộ lọc nếu có tham số thời gian
-    const urlParams = new URLSearchParams(window.location.search);
-    const startDate = urlParams.get('start_date');
-    const endDate = urlParams.get('end_date');
-
-    if (startDate && endDate) {
-        datasets = filterDataByDateRange(datasets, startDate, endDate);
-        datasetsB = filterDataByDateRange(datasetsB, startDate, endDate);
-        
-        // Cập nhật biểu đồ
-        landslideChart.data.datasets = datasets;
-        landslideChart.update();
-        
-        showChartB.data.datasets = datasetsB;
-        showChartB.update();
-        
-        // Cập nhật số lượng đường
-        document.getElementById('lineCount').textContent = datasets.length - 1; // Trừ 1 vì có điểm chuẩn
-    }
-
-    // Đặt giá trị ban đầu cho các trường input date
-    document.addEventListener('DOMContentLoaded', function() {
-        const datasets = {!! $chartData !!};
-        let minDate = null;
-        let maxDate = null;
-
-        datasets.forEach(dataset => {
-            if (dataset.label !== 'Điểm chuẩn') {
-                const date = new Date(dataset.label);
-                if (!minDate || date < minDate) minDate = date;
-                if (!maxDate || date > maxDate) maxDate = date;
-            }
+        const filteredData = dataset.data.filter(point => {
+            const pointDate = new Date(dataset.label);
+            return pointDate >= start && pointDate <= end;
         });
+        
+        return {...dataset, data: filteredData};
+    }).filter(dataset => dataset.data.length > 0 || dataset.label === 'Điểm chuẩn');
+}
 
-        if (minDate && maxDate) {
-            document.getElementById('start_date').value = minDate.toISOString().split('T')[0];
-            document.getElementById('end_date').value = maxDate.toISOString().split('T')[0];
+// Áp dụng bộ lọc nếu có tham số thời gian
+const urlParams = new URLSearchParams(window.location.search);
+const startDate = urlParams.get('start_date');
+const startTime = urlParams.get('start_time') || '00:00';
+const endDate = urlParams.get('end_date');
+const endTime = urlParams.get('end_time') || '23:59';
+
+if (startDate && endDate) {
+    datasets = filterDataByDateRange(datasets, startDate, startTime, endDate, endTime);
+    datasetsB = filterDataByDateRange(datasetsB, startDate, startTime, endDate, endTime);
+    
+    // Cập nhật biểu đồ
+    landslideChart.data.datasets = datasets;
+    landslideChart.update();
+    
+    showChartB.data.datasets = datasetsB;
+    showChartB.update();
+    
+    // Cập nhật số lượng đường
+    document.getElementById('lineCount').textContent = datasets.length - 1; // Trừ 1 vì có điểm chuẩn
+}
+
+// Đặt giá trị ban đầu cho các trường input date và time
+document.addEventListener('DOMContentLoaded', function() {
+    const datasets = {!! $chartData !!};
+    let minDate = null;
+    let maxDate = null;
+
+    datasets.forEach(dataset => {
+        if (dataset.label !== 'Điểm chuẩn') {
+            const date = new Date(dataset.label);
+            if (!minDate || date < minDate) minDate = date;
+            if (!maxDate || date > maxDate) maxDate = date;
         }
     });
+
+    if (minDate && maxDate) {
+        document.getElementById('start_date').value = minDate.toISOString().split('T')[0];
+        document.getElementById('start_time').value = minDate.toTimeString().slice(0, 5);
+        document.getElementById('end_date').value = maxDate.toISOString().split('T')[0];
+        document.getElementById('end_time').value = maxDate.toTimeString().slice(0, 5);
+    }
+});
 </script>

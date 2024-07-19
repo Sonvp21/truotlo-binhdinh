@@ -22,13 +22,13 @@
                 <div class="flex items-center">
                     <label for="start_date" class="mr-2 text-gray-700">Từ ngày:</label>
                     <input type="date" id="start_date" name="start_date" value="{{ $startDate ?? '' }}" class="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="time" id="start_time" name="start_time" value="{{ $startTime ?? '00:00' }}" class="border rounded px-2 py-1 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                
                 <div class="flex items-center">
                     <label for="end_date" class="mr-2 text-gray-700">Đến ngày:</label>
                     <input type="date" id="end_date" name="end_date" value="{{ $endDate ?? '' }}" class="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="time" id="end_time" name="end_time" value="{{ $endTime ?? '23:59' }}" class="border rounded px-2 py-1 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                
                 <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Áp dụng
                 </button>

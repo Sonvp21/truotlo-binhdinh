@@ -12,7 +12,9 @@ class ChartController extends Controller
     public function index(Request $request)
     {
         $startDate = $request->input('start_date');
+        $startTime = $request->input('start_time', '00:00');
         $endDate = $request->input('end_date');
+        $endTime = $request->input('end_time', '23:59');
 
         $client = new Client();
         $response = $client->get('http://171.244.133.49/api/getLandSlideRawData');
@@ -47,10 +49,14 @@ class ChartController extends Controller
                 ];
             });
 
+
             if ($startDate && $endDate) {
-                $filteredData = $filteredData->filter(function ($item) use ($startDate, $endDate) {
+                $startDateTime = Carbon::parse($startDate . ' ' . $startTime);
+                $endDateTime = Carbon::parse($endDate . ' ' . $endTime);
+        
+                $filteredData = $filteredData->filter(function ($item) use ($startDateTime, $endDateTime) {
                     $itemDate = Carbon::parse($item['created_at']);
-                    return $itemDate->between($startDate, $endDate);
+                    return $itemDate->between($startDateTime, $endDateTime);
                 });
             }
 
@@ -102,7 +108,9 @@ class ChartController extends Controller
                 'chartDataB' => json_encode($chartDataB),
                 'lineCount' => $lineCount,
                 'startDate' => $startDate,
-                'endDate' => $endDate
+                'startTime' => $startTime,
+                'endDate' => $endDate,
+                'endTime' => $endTime
             ]);
         } else {
             return view('web.chart', ['data' => [], 'chartData' => json_encode([]),'chartDataB' => json_encode([]), 'lineCount' => 0]);
