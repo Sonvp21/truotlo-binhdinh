@@ -7,6 +7,9 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LandslideDataExport;
+
 class ChartController extends Controller
 {
     public function index(Request $request)
@@ -115,6 +118,69 @@ class ChartController extends Controller
         } else {
             return view('web.chart', ['data' => [], 'chartData' => json_encode([]),'chartDataB' => json_encode([]), 'lineCount' => 0]);
         }
-        // return view('web.chart');
+    }
+
+    public function xuatExcel(Request $request)
+    {
+        $ngayBatDau = $request->input('start_date');
+        $gioBatDau = $request->input('start_time', '00:00');
+        $ngayKetThuc = $request->input('end_date');
+        $gioKetThuc = $request->input('end_time', '23:59');
+
+        $client = new Client();
+        $response = $client->get('http://171.244.133.49/api/getLandSlideRawData');
+        $data = json_decode($response->getBody(), true);
+
+        if ($data['status'] === 1) {
+            $duLieuLoc = collect($data['data'])->map(function ($item) {
+                $mangNoiDung = explode(';', $item['raw_content']);
+                $noiDungPhanTich = [];
+                foreach ($mangNoiDung as $noiDung) {
+                    list($key, $value) = explode(',', $noiDung);
+                    $noiDungPhanTich[trim($key)] = trim($value);
+                }
+
+                return [
+                    'id' => $item['id'],
+                    'Batt(Volts)' => $noiDungPhanTich['Batt(Volts)'] ?? '',
+                    'Temp*Dataloger(Celsius)' => $noiDungPhanTich['Temp*Dataloger(Celsius)'] ?? '',
+                    'PZ1*(Digit)' => $noiDungPhanTich['PZ1*(Digit)'] ?? '',
+                    'PZ2*(Digit)' => $noiDungPhanTich['PZ2*(Digit)'] ?? '',
+                    'CR1*(Digit)' => $noiDungPhanTich['CR1*(Digit)'] ?? '',
+                    'CR2*(Digit)' => $noiDungPhanTich['CR2*(Digit)'] ?? '',
+                    'CR3*(Digit)' => $noiDungPhanTich['CR3*(Digit)'] ?? '',
+                    'calculated_Tilt_A_Or_1(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_A_Or_1(sin)'] ?? 0) - (-0.001565)),
+                    'calculated_Tilt_B_Or_1(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_B_Or_1(sin)'] ?? 0) - (-0.03261)),
+                    'calculated_Tilt_A_Or_2(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_A_Or_2(sin)'] ?? 0) - 0.009616),
+                    'calculated_Tilt_B_Or_2(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_B_Or_2(sin)'] ?? 0) - (-0.053559)),
+                    'calculated_Tilt_A_Or_3(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_A_Or_3(sin)'] ?? 0) - 0.000935),
+                    'calculated_Tilt_B_Or_3(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_B_Or_3(sin)'] ?? 0) - (-0.032529)),
+                    'PZ1_Temp' => $noiDungPhanTich['PZ1_Temp'] ?? '',
+                    'PZ2_Temp' => $noiDungPhanTich['PZ2_Temp'] ?? '',
+                    'CR1_Temp' => $noiDungPhanTich['CR1_Temp'] ?? '',
+                    'CR2_Temp' => $noiDungPhanTich['CR2_Temp'] ?? '',
+                    'CR3_Temp' => $noiDungPhanTich['CR3_Temp'] ?? '',
+                    'Tilt_1_Temp' => $noiDungPhanTich['Tilt_1_Temp'] ?? '',
+                    'Tilt_2_Temp' => $noiDungPhanTich['Tilt_2_Temp'] ?? '',
+                    'Tilt_3_Temp' => $noiDungPhanTich['Tilt_3_Temp'] ?? '',
+                    'created_at' => $item['created_at'],
+                    'updated_at' => $item['updated_at'],
+                ];
+            });
+
+            if ($ngayBatDau && $ngayKetThuc) {
+                $thoiGianBatDau = Carbon::parse($ngayBatDau . ' ' . $gioBatDau);
+                $thoiGianKetThuc = Carbon::parse($ngayKetThuc . ' ' . $gioKetThuc);
+        
+                $duLieuLoc = $duLieuLoc->filter(function ($item) use ($thoiGianBatDau, $thoiGianKetThuc) {
+                    $ngayItem = Carbon::parse($item['created_at']);
+                    return $ngayItem->between($thoiGianBatDau, $thoiGianKetThuc);
+                });
+            }
+
+            return Excel::download(new LandslideDataExport($duLieuLoc), 'du_lieu_truot_lo.xlsx');
+        }
+
+        return back()->with('error', 'Không thể lấy dữ liệu');
     }
 }

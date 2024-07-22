@@ -16,6 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+
     <div class="container mx-auto px-4 py-8">
         <div class="mb-8">
             <form id="dateRangeForm" class="flex items-center justify-center space-x-4">
@@ -32,9 +33,12 @@
                 <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Áp dụng
                 </button>
+                <a href="{{ route('xuat.excel') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Xuất Excel
+                </a>
             </form>
         </div>
-    
+
         <div class="text-center mb-8">
             <p class="text-lg font-semibold">Số lượng đường đã vẽ: <span id="lineCount" class="text-blue-600"></span></p>
         </div>
