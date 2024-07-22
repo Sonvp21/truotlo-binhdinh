@@ -111,25 +111,25 @@ class ForecastSessionController extends Controller
         $data = $request->validate([
             'Nam' => 'required|integer',
             'Thang' => 'required|integer',
-            'cac_diem' => 'required|array|min:1',
-            'cac_diem.*.ten_diem' => 'required|string|max:6',
-            'cac_diem.*.vi_tri' => 'required|string',
-            'cac_diem.*.kinh_do' => 'required|numeric',
-            'cac_diem.*.vi_do' => 'required|numeric',
-            'cac_diem.*.tinh' => 'required|string',
-            'cac_diem.*.huyen' => 'required|string',
-            'cac_diem.*.xa' => 'required|string',
-            'cac_diem.*.cac_ngay' => 'required|array|min:1|max:5',
-            'cac_diem.*.cac_ngay.*.ngay' => 'required|integer|between:1,31',
-            'cac_diem.*.cac_ngay.*.nguy_co' => 'required|string',
+            'Cac_diem' => 'required|array|min:1',
+            'Cac_diem.*.ten_diem' => 'required|string|max:6',
+            'Cac_diem.*.vi_tri' => 'required|string',
+            'Cac_diem.*.kinh_do' => 'required|numeric',
+            'Cac_diem.*.vi_do' => 'required|numeric',
+            'Cac_diem.*.tinh' => 'required|string',
+            'Cac_diem.*.huyen' => 'required|string',
+            'Cac_diem.*.xa' => 'required|string',
+            'Cac_diem.*.cac_ngay' => 'required|array|min:1',
+            'Cac_diem.*.cac_ngay.*.ngay' => 'required|integer|between:1,31',
+            'Cac_diem.*.cac_ngay.*.nguy_co' => 'required|string',
         ]);
-
+    
         $session = ForecastSession::create([
             'nam' => $data['Nam'],
             'thang' => $data['Thang'],
         ]);
-
-        foreach ($data['cac_diem'] as $pointData) {
+    
+        foreach ($data['Cac_diem'] as $pointData) {
             $point = $session->points()->create([
                 'ten_diem' => $pointData['ten_diem'],
                 'vi_tri' => $pointData['vi_tri'],
@@ -139,7 +139,7 @@ class ForecastSessionController extends Controller
                 'huyen' => $pointData['huyen'],
                 'xa' => $pointData['xa'],
             ]);
-
+    
             foreach ($pointData['cac_ngay'] as $riskData) {
                 $point->risks()->create([
                     'ngay' => $riskData['ngay'],
@@ -147,42 +147,44 @@ class ForecastSessionController extends Controller
                 ]);
             }
         }
-
+    
         return response()->json(['message' => 'Phiên dự báo đã được lưu'], 201);
     }
+    
 
     public function update(Request $request, $id)
     {
-        // Validate request data
         $data = $request->validate([
             'Nam' => 'required|integer',
             'Thang' => 'required|integer',
-            'cac_diem' => 'required|array|min:1',
-            'cac_diem.*.ten_diem' => 'required|string|max:6',
-            'cac_diem.*.vi_tri' => 'required|string',
-            'cac_diem.*.kinh_do' => 'required|numeric',
-            'cac_diem.*.vi_do' => 'required|numeric',
-            'cac_diem.*.tinh' => 'required|string',
-            'cac_diem.*.huyen' => 'required|string',
-            'cac_diem.*.xa' => 'required|string',
-            'cac_diem.*.cac_ngay' => 'required|array|min:1|max:5',
-            'cac_diem.*.cac_ngay.*.ngay' => 'required|integer|between:1,31',
-            'cac_diem.*.cac_ngay.*.nguy_co' => 'required|string',
+            'Cac_diem' => 'required|array|min:1',
+            'Cac_diem.*.ten_diem' => 'required|string|max:6',
+            'Cac_diem.*.vi_tri' => 'required|string',
+            'Cac_diem.*.kinh_do' => 'required|numeric',
+            'Cac_diem.*.vi_do' => 'required|numeric',
+            'Cac_diem.*.tinh' => 'required|string',
+            'Cac_diem.*.huyen' => 'required|string',
+            'Cac_diem.*.xa' => 'required|string',
+            'Cac_diem.*.cac_ngay' => 'required|array|min:1',
+            'Cac_diem.*.cac_ngay.*.ngay' => 'required|integer|between:1,31',
+            'Cac_diem.*.cac_ngay.*.nguy_co' => 'required|string',
         ]);
-
-        // Tìm phiên dự báo cần cập nhật
+    
         $session = ForecastSession::findOrFail($id);
-
-        // Cập nhật thông tin của phiên dự báo
-        $session->nam = $data['Nam'];
-        $session->thang = $data['Thang'];
-        $session->save();
-
-        // Xoá tất cả các điểm dự báo và các nguy cơ tương ứng của phiên dự báo hiện tại
-        $session->points()->delete();
-
+    
+        $session->update([
+            'nam' => $data['Nam'],
+            'thang' => $data['Thang'],
+        ]);
+    
+        // Xóa tất cả các điểm dự báo và các nguy cơ tương ứng của phiên dự báo hiện tại
+        foreach ($session->points as $point) {
+            $point->risks()->delete();
+            $point->delete();
+        }
+    
         // Tạo lại các điểm dự báo và các nguy cơ mới từ dữ liệu được cập nhật
-        foreach ($data['cac_diem'] as $pointData) {
+        foreach ($data['Cac_diem'] as $pointData) {
             $point = $session->points()->create([
                 'ten_diem' => $pointData['ten_diem'],
                 'vi_tri' => $pointData['vi_tri'],
@@ -192,7 +194,7 @@ class ForecastSessionController extends Controller
                 'huyen' => $pointData['huyen'],
                 'xa' => $pointData['xa'],
             ]);
-
+    
             foreach ($pointData['cac_ngay'] as $riskData) {
                 $point->risks()->create([
                     'ngay' => $riskData['ngay'],
@@ -200,9 +202,10 @@ class ForecastSessionController extends Controller
                 ]);
             }
         }
-
+    
         return response()->json(['message' => 'Phiên dự báo đã được cập nhật'], 200);
     }
+    
 
     public function destroy($id)
     {
