@@ -20,7 +20,7 @@ class LandslideDataExport implements FromArray, WithCustomStartCell, ShouldAutoS
         $export = [];
 
         // Thêm tiêu đề cột
-        $export[] = ['Trường dữ liệu (đã qua chuyển đổi'];
+        $export[] = ['Trường dữ liệu (đã qua chuyển đổi)'];
 
         // Thêm tên các trường
         $fields = [
