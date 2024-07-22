@@ -126,11 +126,11 @@ class ChartController extends Controller
         $gioBatDau = $request->input('start_time', '00:00');
         $ngayKetThuc = $request->input('end_date');
         $gioKetThuc = $request->input('end_time', '23:59');
-
+    
         $client = new Client();
         $response = $client->get('http://171.244.133.49/api/getLandSlideRawData');
         $data = json_decode($response->getBody(), true);
-
+    
         if ($data['status'] === 1) {
             $duLieuLoc = collect($data['data'])->map(function ($item) {
                 $mangNoiDung = explode(';', $item['raw_content']);
@@ -139,22 +139,27 @@ class ChartController extends Controller
                     list($key, $value) = explode(',', $noiDung);
                     $noiDungPhanTich[trim($key)] = trim($value);
                 }
-
+    
                 return [
                     'id' => $item['id'],
                     'Batt(Volts)' => $noiDungPhanTich['Batt(Volts)'] ?? '',
-                    'Temp*Dataloger(Celsius)' => $noiDungPhanTich['Temp*Dataloger(Celsius)'] ?? '',
-                    'PZ1*(Digit)' => $noiDungPhanTich['PZ1*(Digit)'] ?? '',
-                    'PZ2*(Digit)' => $noiDungPhanTich['PZ2*(Digit)'] ?? '',
-                    'CR1*(Digit)' => $noiDungPhanTich['CR1*(Digit)'] ?? '',
-                    'CR2*(Digit)' => $noiDungPhanTich['CR2*(Digit)'] ?? '',
-                    'CR3*(Digit)' => $noiDungPhanTich['CR3*(Digit)'] ?? '',
-                    'calculated_Tilt_A_Or_1(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_A_Or_1(sin)'] ?? 0) - (-0.001565)),
-                    'calculated_Tilt_B_Or_1(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_B_Or_1(sin)'] ?? 0) - (-0.03261)),
-                    'calculated_Tilt_A_Or_2(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_A_Or_2(sin)'] ?? 0) - 0.009616),
-                    'calculated_Tilt_B_Or_2(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_B_Or_2(sin)'] ?? 0) - (-0.053559)),
-                    'calculated_Tilt_A_Or_3(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_A_Or_3(sin)'] ?? 0) - 0.000935),
-                    'calculated_Tilt_B_Or_3(sin)' => 500 * ((float)($noiDungPhanTich['Tilt_B_Or_3(sin)'] ?? 0) - (-0.032529)),
+                    'Temp_Dataloger(Celsius)' => $noiDungPhanTich['Temp_Dataloger(Celsius)'] ?? '',
+                    // 'PZ1_(Digit)' => ((float)($noiDungPhanTich['PZ1_(Digit)'] ?? '')),
+                    // 'PZ2_(Digit)' => ((float)($noiDungPhanTich['PZ2_(Digit)'] ?? '')),
+                    // 'CR1_(Digit)' =>((float)($noiDungPhanTich['CR1_(Digit)'] ?? '')),
+                    // 'CR2_(Digit)' => ((float)($noiDungPhanTich['CR2_(Digit)'] ?? '')),
+                    // 'CR3_(Digit)' => ((float)($noiDungPhanTich['CR3_(Digit)'] ?? '')),
+                    'PZ1_(Digit)' => isset($noiDungPhanTich['PZ1_(Digit)']) ? -0.09763 * ((float)$noiDungPhanTich['PZ1_(Digit)'] - 9338.196) : '',
+                    'PZ2_(Digit)' => isset($noiDungPhanTich['PZ2_(Digit)']) ? -0.0953721 * ((float)$noiDungPhanTich['PZ2_(Digit)'] - 9952.377) : '',
+                    'CR1_(Digit)' => isset($noiDungPhanTich['CR1_(Digit)']) ? 0.0452854 * ((float)$noiDungPhanTich['CR1_(Digit)'] - 4645.767) : '',
+                    'CR2_(Digit)' => isset($noiDungPhanTich['CR2_(Digit)']) ? 0.0456835 * ((float)$noiDungPhanTich['CR2_(Digit)'] - 6104.228) : '',
+                    'CR3_(Digit)' => isset($noiDungPhanTich['CR3_(Digit)']) ? 0.0452898 * ((float)$noiDungPhanTich['CR3_(Digit)'] - 4722.004) : '',
+                    'Tilt_A_Or_1(sin)' => isset($noiDungPhanTich['Tilt_A_Or_1(sin)']) ? 500 * ((float)$noiDungPhanTich['Tilt_A_Or_1(sin)'] - (-0.001565)) : '',
+                    'Tilt_B_Or_1(sin)' => isset($noiDungPhanTich['Tilt_B_Or_1(sin)']) ? 500 * ((float)$noiDungPhanTich['Tilt_B_Or_1(sin)'] - (-0.03261)) : '',
+                    'Tilt_A_Or_2(sin)' => isset($noiDungPhanTich['Tilt_A_Or_2(sin)']) ? 500 * ((float)$noiDungPhanTich['Tilt_A_Or_2(sin)'] - 0.009616) : '',
+                    'Tilt_B_Or_2(sin)' => isset($noiDungPhanTich['Tilt_B_Or_2(sin)']) ? 500 * ((float)$noiDungPhanTich['Tilt_B_Or_2(sin)'] - (-0.053559)) : '',
+                    'Tilt_A_Or_3(sin)' => isset($noiDungPhanTich['Tilt_A_Or_3(sin)']) ? 500 * ((float)$noiDungPhanTich['Tilt_A_Or_3(sin)'] - 0.000935) : '',
+                    'Tilt_B_Or_3(sin)' => isset($noiDungPhanTich['Tilt_B_Or_3(sin)']) ? 500 * ((float)$noiDungPhanTich['Tilt_B_Or_3(sin)'] - (-0.032529)) : '',
                     'PZ1_Temp' => $noiDungPhanTich['PZ1_Temp'] ?? '',
                     'PZ2_Temp' => $noiDungPhanTich['PZ2_Temp'] ?? '',
                     'CR1_Temp' => $noiDungPhanTich['CR1_Temp'] ?? '',
@@ -163,11 +168,11 @@ class ChartController extends Controller
                     'Tilt_1_Temp' => $noiDungPhanTich['Tilt_1_Temp'] ?? '',
                     'Tilt_2_Temp' => $noiDungPhanTich['Tilt_2_Temp'] ?? '',
                     'Tilt_3_Temp' => $noiDungPhanTich['Tilt_3_Temp'] ?? '',
-                    'created_at' => $item['created_at'],
-                    'updated_at' => $item['updated_at'],
+                    'created_at' => Carbon::parse($item['created_at'])->format('d-m-Y H:i:s'),
+                    'updated_at' => Carbon::parse($item['updated_at'])->format('d-m-Y H:i:s'),
                 ];
             });
-
+    
             if ($ngayBatDau && $ngayKetThuc) {
                 $thoiGianBatDau = Carbon::parse($ngayBatDau . ' ' . $gioBatDau);
                 $thoiGianKetThuc = Carbon::parse($ngayKetThuc . ' ' . $gioKetThuc);
@@ -177,10 +182,10 @@ class ChartController extends Controller
                     return $ngayItem->between($thoiGianBatDau, $thoiGianKetThuc);
                 });
             }
-
+    
             return Excel::download(new LandslideDataExport($duLieuLoc), 'du_lieu_truot_lo.xlsx');
         }
-
+    
         return back()->with('error', 'Không thể lấy dữ liệu');
     }
 }
