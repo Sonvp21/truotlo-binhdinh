@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FlashReportController;
 use App\Http\Controllers\MapController;
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/gioi-thieu', [AboutController::class, 'index'])->name('about');
 Route::get('/thong-tin-tuot-lo', [FlashReportController::class, 'index'])->name('flash-report');
 Route::get('/bando-gis', [MapController::class, 'index'])->name('map');
+Route::get('/bieudo', [ChartController::class, 'index'])->name('chart');
 Route::get('/lien-he', [ContactController::class, 'index'])->name('contact');
 
 require __DIR__.'/admin.php';
