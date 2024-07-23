@@ -25,6 +25,7 @@ Route::get('/gioi-thieu', [AboutController::class, 'index'])->name('about');
 Route::get('/thong-tin-tuot-lo', [FlashReportController::class, 'index'])->name('flash-report');
 Route::get('/bando-gis', [MapController::class, 'index'])->name('map');
 Route::get('/bieudo', [ChartController::class, 'index'])->name('chart');
+Route::get('/xuat-excel', [ChartController::class, 'xuatExcel'])->name('xuat.excel');
 Route::get('/lien-he', [ContactController::class, 'index'])->name('contact');
 
 require __DIR__.'/admin.php';
