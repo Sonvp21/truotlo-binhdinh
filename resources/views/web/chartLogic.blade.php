@@ -304,4 +304,19 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('end_time').value = maxDate.toTimeString().slice(0, 5);
     }
 });
+
+document.getElementById('exportExcel').addEventListener('click', function() {
+    var startDate = document.getElementById('start_date').value;
+    var startTime = document.getElementById('start_time').value;
+    var endDate = document.getElementById('end_date').value;
+    var endTime = document.getElementById('end_time').value;
+
+    var url = '/export-excel?' + 
+              'start_date=' + encodeURIComponent(startDate) + 
+              '&start_time=' + encodeURIComponent(startTime) + 
+              '&end_date=' + encodeURIComponent(endDate) + 
+              '&end_time=' + encodeURIComponent(endTime);
+
+    window.location.href = url;
+});
 </script>
