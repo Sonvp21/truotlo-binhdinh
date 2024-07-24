@@ -25,6 +25,7 @@
                                 </button>
                             </div>                             --}}
                             @include('admin.days.post')
+                            @include('admin.days.post_json')
                         </div>
                         <dialog id="my_modal_full" class="modal">
                             <div class="modal-box">
@@ -55,9 +56,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($sessions as $session)
+                                    @foreach ($sessions as $index => $session)
                                         <tr>
-                                            <th>{{ $loop->index + 1 }}</th>
+                                            <th>{{ $sessions->firstItem() + $index }}</th>
                                             <td>
                                                 <button onclick="openModal({{ $session->id }})">
                                                     Phiên dự báo {{ $session->nam }} - {{ $session->thang }}
@@ -108,7 +109,7 @@
                     </div>
                 </div>
                 <div class="mt-4">
-                    {{-- {{ $sessions->links('pagination.web-tailwind') }} --}}
+                    {{ $sessions->links() }}
                 </div>
             </div>
             @foreach ($sessions as $session)

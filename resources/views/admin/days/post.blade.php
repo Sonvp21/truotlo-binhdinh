@@ -17,15 +17,18 @@
             <div id="form-error" class="text-red-500 mt-2"></div>
 
             <div class="mt-4">
+                <!-- Năm -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
                     Năm
-                    <input type="number" id="nam" name="Nam" required class="grow" placeholder="Nhập năm">
+                    <input type="number" id="nam" name="Nam" required min="1900" max="2100" class="grow" placeholder="Nhập năm">
                 </label>
+
+                <!-- Tháng -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
                     Tháng
-                    <input type="number" id="thang" name="Thang" required class="grow"
-                        placeholder="Nhập tháng">
+                    <input type="number" id="thang" name="Thang" required min="1" max="12" class="grow" placeholder="Nhập tháng">
                 </label>
+
                 <div id="points-container">
                     <!-- Các điểm dự báo sẽ được thêm vào đây bằng JavaScript -->
                 </div>
@@ -37,6 +40,7 @@
 </dialog>
 
 <script>
+    // Function to add a new forecast point
     function addPoint() {
         const container = document.getElementById('points-container');
         const pointCount = container.querySelectorAll('.point').length;
@@ -44,54 +48,54 @@
         const pointDiv = document.createElement('div');
         pointDiv.classList.add('point', 'mb-4', 'p-4', 'border', 'border-gray-300', 'rounded');
         pointDiv.innerHTML = `
-    <h4 class="font-bold mb-2">Điểm Dự Báo</h4>
-    <label class="input input-bordered flex items-center gap-2 mb-2">
-        Tên Điểm
-        <input type="text" name="Cac_diem[${pointCount}][ten_diem]" required class="grow" placeholder="Nhập tên điểm">
-    </label>
-    <label class="input input-bordered flex items-center gap-2 mb-2">
-        Vị Trí
-        <input type="text" name="Cac_diem[${pointCount}][vi_tri]" required class="grow" placeholder="Nhập vị trí">
-    </label>
-    <label class="input input-bordered flex items-center gap-2 mb-2">
-        Kinh Độ
-        <input type="number" name="Cac_diem[${pointCount}][kinh_do]" step="0.000001" required class="grow" placeholder="Nhập kinh độ">
-    </label>
-    <label class="input input-bordered flex items-center gap-2 mb-2">
-        Vĩ Độ
-        <input type="number" name="Cac_diem[${pointCount}][vi_do]" step="0.000001" required class="grow" placeholder="Nhập vĩ độ">
-    </label>
-    <label class="input input-bordered flex items-center gap-2 mb-2">
-        Tỉnh
-        <input type="text" name="Cac_diem[${pointCount}][tinh]" required class="grow" placeholder="Nhập tỉnh">
-    </label>
-    <label class="input input-bordered flex items-center gap-2 mb-2">
-        Huyện
-        <input type="text" name="Cac_diem[${pointCount}][huyen]" required class="grow" placeholder="Nhập huyện">
-    </label>
-    <label class="input input-bordered flex items-center gap-2 mb-2">
-        Xã
-        <input type="text" name="Cac_diem[${pointCount}][xa]" required class="grow" placeholder="Nhập xã">
-    </label>
-    <div id="days-container-${pointCount}">
-        <!-- Các ngày cho điểm này -->
-        <div class="day-entry">
+            <h4 class="font-bold mb-2">Điểm Dự Báo</h4>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Ngày
-                <input type="number" name="Cac_diem[${pointCount}][cac_ngay][0][ngay]" required class="grow" placeholder="Nhập ngày">
+                Tên Điểm
+                <input type="text" name="Cac_diem[${pointCount}][ten_diem]" required class="grow" placeholder="Nhập tên điểm" maxlength="6">
             </label>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Nguy Cơ
-                <input type="text" name="Cac_diem[${pointCount}][cac_ngay][0][nguy_co]" required class="grow" placeholder="Nhập nguy cơ">
+                Vị Trí
+                <input type="text" name="Cac_diem[${pointCount}][vi_tri]" required class="grow" placeholder="Nhập vị trí">
             </label>
-        </div>
-    </div>
-    <button type="button" onclick="addDay(this)" class="btn mt-2">Thêm Ngày</button>
-`;
+            <label class="input input-bordered flex items-center gap-2 mb-2">
+                Kinh Độ
+                <input type="number" name="Cac_diem[${pointCount}][kinh_do]" step="0.000001" required class="grow" placeholder="Nhập kinh độ">
+            </label>
+            <label class="input input-bordered flex items-center gap-2 mb-2">
+                Vĩ Độ
+                <input type="number" name="Cac_diem[${pointCount}][vi_do]" step="0.000001" required class="grow" placeholder="Nhập vĩ độ">
+            </label>
+            <label class="input input-bordered flex items-center gap-2 mb-2">
+                Tỉnh
+                <input type="text" name="Cac_diem[${pointCount}][tinh]" required class="grow" placeholder="Nhập tỉnh">
+            </label>
+            <label class="input input-bordered flex items-center gap-2 mb-2">
+                Huyện
+                <input type="text" name="Cac_diem[${pointCount}][huyen]" required class="grow" placeholder="Nhập huyện">
+            </label>
+            <label class="input input-bordered flex items-center gap-2 mb-2">
+                Xã
+                <input type="text" name="Cac_diem[${pointCount}][xa]" required class="grow" placeholder="Nhập xã">
+            </label>
+            <div id="days-container-${pointCount}">
+                <!-- Các ngày cho điểm này -->
+                <div class="day-entry">
+                    <label class="input input-bordered flex items-center gap-2 mb-2">
+                        Ngày
+                        <input type="number" name="Cac_diem[${pointCount}][cac_ngay][0][ngay]" required class="grow" placeholder="Nhập ngày" min="1" max="31">
+                    </label>
+                    <label class="input input-bordered flex items-center gap-2 mb-2">
+                        Nguy Cơ
+                        <input type="text" name="Cac_diem[${pointCount}][cac_ngay][0][nguy_co]" required class="grow" placeholder="Nhập nguy cơ">
+                    </label>
+                </div>
+            </div>
+            <button type="button" onclick="addDay(this)" class="btn mt-2">Thêm Ngày</button>
+        `;
         container.appendChild(pointDiv);
     }
 
-
+    // Function to add a new day entry to a forecast point
     function addDay(button) {
         const pointDiv = button.closest('.point');
         const daysContainerId = pointDiv.querySelector('[id^="days-container-"]').id;
@@ -101,15 +105,39 @@
         const dayDiv = document.createElement('div');
         dayDiv.classList.add('day-entry', 'mb-2');
         dayDiv.innerHTML = `
-    <label class="input input-bordered flex items-center gap-2 mb-2">
-        Ngày
-        <input type="number" name="Cac_diem[${pointDiv.querySelector('[name^="Cac_diem"]').name.match(/\[(\d+)\]/)[1]}][cac_ngay][${dayCount}][ngay]" required class="grow" placeholder="Nhập ngày">
-    </label>
-    <label class="input input-bordered flex items-center gap-2 mb-2">
-        Nguy Cơ
-        <input type="text" name="Cac_diem[${pointDiv.querySelector('[name^="Cac_diem"]').name.match(/\[(\d+)\]/)[1]}][cac_ngay][${dayCount}][nguy_co]" required class="grow" placeholder="Nhập nguy cơ">
-    </label>
-`;
+            <label class="input input-bordered flex items-center gap-2 mb-2">
+                Ngày
+                <input type="number" name="Cac_diem[${pointDiv.querySelector('[name^="Cac_diem"]').name.match(/\[(\d+)\]/)[1]}][cac_ngay][${dayCount}][ngay]" required class="grow" placeholder="Nhập ngày" min="1" max="31">
+            </label>
+            <label class="input input-bordered flex items-center gap-2 mb-2">
+                Nguy Cơ
+                <input type="text" name="Cac_diem[${pointDiv.querySelector('[name^="Cac_diem"]').name.match(/\[(\d+)\]/)[1]}][cac_ngay][${dayCount}][nguy_co]" required class="grow" placeholder="Nhập nguy cơ">
+            </label>
+        `;
         daysContainer.appendChild(dayDiv);
+    }
+
+    // Form validation and error handling
+    document.getElementById('post-session-form').addEventListener('submit', function(event) {
+        const form = event.target;
+        const isValid = form.checkValidity();
+
+        if (!isValid) {
+            event.preventDefault(); // Ngăn không cho gửi form nếu có lỗi
+            showValidationErrors(form);
+        }
+    });
+
+    function showValidationErrors(form) {
+        const errorDiv = document.getElementById('form-error');
+        errorDiv.innerHTML = '';
+
+        const inputs = form.querySelectorAll('input:invalid');
+        inputs.forEach(input => {
+            const errorMessage = document.createElement('div');
+            errorMessage.classList.add('text-red-500', 'mt-2');
+            errorMessage.textContent = input.validationMessage;
+            errorDiv.appendChild(errorMessage);
+        });
     }
 </script>
