@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\ForecastSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ForecastSessionController extends Controller
 {
+    public function indexView()
+    {
+        $sessions = ForecastSession::latest()->paginate(10);
+        return view('admin.days.index', ['sessions' => $sessions]);
+    }
+
+    ///test api
     public function index()
     {
         $sessions = ForecastSession::all();
@@ -123,7 +131,7 @@ class ForecastSessionController extends Controller
             'Cac_diem.*.cac_ngay.*.ngay' => 'required|integer|between:1,31',
             'Cac_diem.*.cac_ngay.*.nguy_co' => 'required|string',
         ]);
-    
+
         $session = ForecastSession::create([
             'nam' => $data['Nam'],
             'thang' => $data['Thang'],
@@ -148,9 +156,66 @@ class ForecastSessionController extends Controller
             }
         }
     
-        return response()->json(['message' => 'Phiên dự báo đã được lưu'], 201);
+        return redirect()->route('admin.sessions.index')->with('success', 'Phiên dự báo đã được lưu thành công');
     }
-    
+
+    public function storeFromJson(Request $request)
+{
+    $request->validate([
+        'file' => 'required|file|mimes:json',
+    ]);
+
+    $file = $request->file('file');
+    $data = json_decode(file_get_contents($file), true);
+
+    // Validate the JSON data
+    $validator = Validator::make($data, [
+        'Nam' => 'required|integer',
+        'Thang' => 'required|integer',
+        'Cac_diem' => 'required|array|min:1',
+        'Cac_diem.*.ten_diem' => 'required|string|max:6',
+        'Cac_diem.*.vi_tri' => 'required|string',
+        'Cac_diem.*.kinh_do' => 'required|numeric',
+        'Cac_diem.*.vi_do' => 'required|numeric',
+        'Cac_diem.*.tinh' => 'required|string',
+        'Cac_diem.*.huyen' => 'required|string',
+        'Cac_diem.*.xa' => 'required|string',
+        'Cac_diem.*.cac_ngay' => 'required|array|min:1',
+        'Cac_diem.*.cac_ngay.*.ngay' => 'required|integer|between:1,31',
+        'Cac_diem.*.cac_ngay.*.nguy_co' => 'required|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    $session = ForecastSession::create([
+        'nam' => $data['Nam'],
+        'thang' => $data['Thang'],
+    ]);
+
+    foreach ($data['Cac_diem'] as $pointData) {
+        $point = $session->points()->create([
+            'ten_diem' => $pointData['ten_diem'],
+            'vi_tri' => $pointData['vi_tri'],
+            'kinh_do' => $pointData['kinh_do'],
+            'vi_do' => $pointData['vi_do'],
+            'tinh' => $pointData['tinh'],
+            'huyen' => $pointData['huyen'],
+            'xa' => $pointData['xa'],
+        ]);
+
+        foreach ($pointData['cac_ngay'] as $riskData) {
+            $point->risks()->create([
+                'ngay' => $riskData['ngay'],
+                'nguy_co' => $riskData['nguy_co'],
+            ]);
+        }
+    }
+
+    return redirect()->route('admin.sessions.index')->with('success', 'Phiên dự báo đã được lưu thành công từ JSON');
+}
+
 
     public function update(Request $request, $id)
     {

@@ -6,8 +6,8 @@
                     class="btn btn-square btn-ghost drawer-button lg:hidden ">
                     <i class="fad fa-bars"></i></label></span>
             <div class="flex items-center gap-2 lg:hidden"><a data-sveltekit-preload-data href="/"
-                    aria-current="page" aria-label="Bentre-shtt"
-                    class="flex-0 btn btn-ghost gap-1 px-2 md:gap-2"><span class="font-title text-base-content text-lg md:text-2xl">Bentre-shtt</span></a>
+                    aria-current="page" aria-label="Trượt lở - Bình định"
+                    class="flex-0 btn btn-ghost gap-1 px-2 md:gap-2"><span class="font-title text-base-content text-lg md:text-2xl">Trượt lở - Bình định</span></a>
             </div>
             <div class="hidden w-full max-w-sm lg:flex"></div>
         </div>

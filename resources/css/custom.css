@@ -1,0 +1,43 @@
+.input {
+    font-size: 14px !important;
+    height: unset !important;
+}
+.input-sm {
+    height: 2rem !important;
+}
+.file-input {
+    height: 2.2rem !important;
+}
+.menu li {
+    list-style: none; /* Loại bỏ dấu đầu dòng của list */
+}
+
+.menu li > *:not(ul, .menu-title, details, .btn):hover,
+.menu li > *:not(ul, .menu-title, details, .btn):focus,
+.menu li > *:not(ul, .menu-title, details, .btn):active {
+    --tw-bg-opacity: 1;
+    background-color: rgb(153, 246, 228); /* Màu nền khi hover */
+    --tw-text-opacity: 1;
+    color: rgb(0, 0, 0); /* Màu chữ khi hover */
+}
+
+.menu li > details > summary:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(153, 246, 228); /* Màu nền khi hover */
+    --tw-text-opacity: 1;
+    color: rgb(0, 0, 0); /* Màu chữ khi hover */
+}
+
+.menu li > *:not(ul, .menu-title, details, .btn):active {
+    --tw-bg-opacity: 1;
+    background-color: rgb(45, 212, 191); /* Màu nền khi active */
+    --tw-text-opacity: 1;
+    color: black; /* Màu chữ khi active */
+}
+
+.menu li > *:not(ul, .menu-title, details, .btn):active, .menu li > *:not(ul, .menu-title, details, .btn).active, .menu li > details > summary:active {
+    --tw-bg-opacity: 1;
+    background-color: rgb(45, 212, 191) !important;
+    --tw-text-opacity: 1;
+    color: black !important;
+}

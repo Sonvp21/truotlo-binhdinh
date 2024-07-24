@@ -40,7 +40,7 @@
                 </a>
             @endif
             <button class="btn-outline btn ml-auto" type="submit">
-                <span>@lang('admin.login')</span>
+                <span>Login</span>
             </button>            
         </div>
     </form>
