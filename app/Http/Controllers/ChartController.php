@@ -40,6 +40,12 @@ class ChartController extends Controller
                 $calculated_Tilt_B_Or_2_sin = 500 * ((float)$parsedContent['Tilt_B_Or_2(sin)'] - (- 0.053559));
                 $calculated_Tilt_B_Or_3_sin = 500 * ((float)$parsedContent['Tilt_B_Or_3(sin)'] - (- 0.032529));
 
+                $calculated_PZ1_Digit = -0.09763 * ((float)$parsedContent['PZ1_(Digit)'] - 9338.196);
+                $calculated_PZ2_Digit = -0.0953721 * ((float)$parsedContent['PZ2_(Digit)'] - 9952.377);
+                $calculated_CR1_Digit = 0.0452854 * ((float)$parsedContent['CR1_(Digit)'] - 4645.767);
+                $calculated_CR2_Digit = 0.0456835 * ((float)$parsedContent['CR2_(Digit)'] - 6104.228);
+                $calculated_CR3_Digit = 0.0452898 * ((float)$parsedContent['CR3_(Digit)'] - 4722.004);
+
                 return [
                     'id' => $item['id'],
                     'calculated_Tilt_A_Or_1_sin' => $calculated_Tilt_A_Or_1_sin,
@@ -48,10 +54,14 @@ class ChartController extends Controller
                     'calculated_Tilt_B_Or_1_sin' => $calculated_Tilt_B_Or_1_sin,
                     'calculated_Tilt_B_Or_2_sin' => $calculated_Tilt_B_Or_2_sin,
                     'calculated_Tilt_B_Or_3_sin' => $calculated_Tilt_B_Or_3_sin,
+                    'calculated_PZ1_Digit' => $calculated_PZ1_Digit,
+                    'calculated_PZ2_Digit' => $calculated_PZ2_Digit,
+                    'calculated_CR1_Digit' => $calculated_CR1_Digit,
+                    'calculated_CR2_Digit' => $calculated_CR2_Digit,
+                    'calculated_CR3_Digit' => $calculated_CR3_Digit,
                     'created_at' => $item['created_at'],
                 ];
             });
-
 
             if ($startDate && $endDate) {
                 $startDateTime = Carbon::parse($startDate . ' ' . $startTime);
@@ -103,12 +113,53 @@ class ChartController extends Controller
                 ],
             ]);
 
+            $pzChartData = $filteredData->map(function ($item) {
+                return [
+                    'y' => $item['calculated_PZ1_Digit'],
+                    'x' => Carbon::parse($item['created_at'])->format('Y-m-d H:i:s')
+                ];
+            })->values();
+
+
+            $pzChartData2 = $filteredData->map(function ($item) {
+                return [
+                    'y' => $item['calculated_PZ2_Digit'],
+                    'x' => Carbon::parse($item['created_at'])->format('Y-m-d H:i:s')
+                ];
+            })->values();
+
+            $crChartData = $filteredData->map(function ($item) {
+                return [
+                    'y' => $item['calculated_CR1_Digit'],
+                    'x' => Carbon::parse($item['created_at'])->format('Y-m-d H:i:s')
+                ];
+            })->values();
+
+            $crChartData2 = $filteredData->map(function ($item) {
+                return [
+                    'y' => $item['calculated_CR2_Digit'],
+                    'x' => Carbon::parse($item['created_at'])->format('Y-m-d H:i:s')
+                ];
+            })->values();
+
+            $crChartData3 = $filteredData->map(function ($item) {
+                return [
+                    'y' => $item['calculated_CR3_Digit'],
+                    'x' => Carbon::parse($item['created_at'])->format('Y-m-d H:i:s')
+                ];
+            })->values();
+
             $lineCount = $chartData->count();
 
             return view('web.chart', [
                 'data' => $filteredData, 
                 'chartData' => json_encode($chartData),
                 'chartDataB' => json_encode($chartDataB),
+                'pzChartData' => json_encode($pzChartData),
+                'pzChartData2' => json_encode($pzChartData2),
+                'crChartData' => json_encode($crChartData),
+                'crChartData2' => json_encode($crChartData2),
+                'crChartData3' => json_encode($crChartData3),
                 'lineCount' => $lineCount,
                 'startDate' => $startDate,
                 'startTime' => $startTime,
@@ -116,7 +167,17 @@ class ChartController extends Controller
                 'endTime' => $endTime
             ]);
         } else {
-            return view('web.chart', ['data' => [], 'chartData' => json_encode([]),'chartDataB' => json_encode([]), 'lineCount' => 0]);
+            return view('web.chart', [
+                'data' => [], 
+                'chartData' => json_encode([]),
+                'chartDataB' => json_encode([]),
+                'pzChartData' => json_encode([]),
+                'pzChartData2' => json_encode([]),
+                'crChartData' => json_encode([]),
+                'crChartData2' => json_encode([]),
+                'crChartData3' => json_encode([]),
+                'lineCount' => 0
+            ]);
         }
     }
 
@@ -144,11 +205,6 @@ class ChartController extends Controller
                     'id' => $item['id'],
                     'Batt(Volts)' => $noiDungPhanTich['Batt(Volts)'] ?? '',
                     'Temp_Dataloger(Celsius)' => $noiDungPhanTich['Temp_Dataloger(Celsius)'] ?? '',
-                    // 'PZ1_(Digit)' => ((float)($noiDungPhanTich['PZ1_(Digit)'] ?? '')),
-                    // 'PZ2_(Digit)' => ((float)($noiDungPhanTich['PZ2_(Digit)'] ?? '')),
-                    // 'CR1_(Digit)' =>((float)($noiDungPhanTich['CR1_(Digit)'] ?? '')),
-                    // 'CR2_(Digit)' => ((float)($noiDungPhanTich['CR2_(Digit)'] ?? '')),
-                    // 'CR3_(Digit)' => ((float)($noiDungPhanTich['CR3_(Digit)'] ?? '')),
                     'PZ1_(Digit)' => isset($noiDungPhanTich['PZ1_(Digit)']) ? -0.09763 * ((float)$noiDungPhanTich['PZ1_(Digit)'] - 9338.196) : '',
                     'PZ2_(Digit)' => isset($noiDungPhanTich['PZ2_(Digit)']) ? -0.0953721 * ((float)$noiDungPhanTich['PZ2_(Digit)'] - 9952.377) : '',
                     'CR1_(Digit)' => isset($noiDungPhanTich['CR1_(Digit)']) ? 0.0452854 * ((float)$noiDungPhanTich['CR1_(Digit)'] - 4645.767) : '',
