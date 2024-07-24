@@ -25,10 +25,6 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <x-rich-text::styles
-        theme="richtextlaravel"
-        data-turbo-track="false"
-    />
 </head>
 <body class="text-gray-900 font-sans antialiased">
     <div class="bg-gray-100 flex min-h-screen flex-col items-center pt-6 sm:justify-center sm:pt-0">
