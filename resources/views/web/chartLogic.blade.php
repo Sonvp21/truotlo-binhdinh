@@ -142,7 +142,7 @@
         const end = new Date(`${endDate}T${endTime}`);
 
         return datasets.map(dataset => {
-            if (dataset.label === 'Điểm chuẩn') return dataset;
+            if (dataset.label === 'Bắt đầu') return dataset;
             
             const filteredData = dataset.data.filter(point => {
                 const pointDate = new Date(dataset.label);
@@ -150,7 +150,7 @@
             });
             
             return {...dataset, data: filteredData};
-        }).filter(dataset => dataset.data.length > 0 || dataset.label === 'Điểm chuẩn');
+        }).filter(dataset => dataset.data.length > 0 || dataset.label === 'Bắt đầu');
     }
 
 
@@ -190,7 +190,7 @@ createLineChart(crCtx2, crChartData2, 'Crackmeter 2', 'rgba(153, 102, 255, 1)', 
 
 // Tạo biểu đồ CR3
 const crCtx3 = document.getElementById('crChart3').getContext('2d');
-createLineChart(crCtx3, crChartData3, 'Crackmeter 3', 'rgba(255, 205, 86, 1)', 'rgba(255, 205, 86, 0.2)', 'Calculated CR3 Digit');
+createLineChart(crCtx3, crChartData3, 'Crackmeter ', 'rgba(255, 205, 86, 1)', 'rgba(255, 205, 86, 0.2)', 'Calculated CR3 Digit');
 
 
     // Tạo biểu đồ landslide
@@ -363,29 +363,32 @@ createLineChart(crCtx3, crChartData3, 'Crackmeter 3', 'rgba(255, 205, 86, 1)', '
         showChartB.data.datasets = datasetsB;
         showChartB.update();
         
-        document.getElementById('lineCount').textContent = datasets.length - 1; // Trừ 1 vì có điểm chuẩn
+        document.getElementById('lineCount').textContent = datasets.length - 1; // Trừ 1 vì có Bắt đầu
     }
 
     // Thiết lập giá trị mặc định cho các ô chọn ngày giờ
     document.addEventListener('DOMContentLoaded', function() {
-        let minDate = null;
-        let maxDate = null;
+    let minDate = null;
+    let maxDate = null;
 
-        datasets.forEach(dataset => {
-            if (dataset.label !== 'Điểm chuẩn') {
-                const date = new Date(dataset.label);
-                if (!minDate || date < minDate) minDate = date;
-                if (!maxDate || date > maxDate) maxDate = date;
-            }
-        });
-
-        if (minDate && maxDate) {
-            document.getElementById('start_date').value = minDate.toISOString().split('T')[0];
-            document.getElementById('start_time').value = minDate.toTimeString().slice(0, 5);
-            document.getElementById('end_date').value = maxDate.toISOString().split('T')[0];
-            document.getElementById('end_time').value = maxDate.toTimeString().slice(0, 5);
+    datasets.forEach(dataset => {
+        if (dataset.label !== 'Bắt đầu') {
+            const date = new Date(dataset.label);
+            if (!minDate || date < minDate) minDate = date;
+            if (!maxDate || date > maxDate) maxDate = date;
         }
     });
+
+    if (minDate && maxDate) {
+        // Đặt thời gian của maxDate thành cuối ngày
+        maxDate.setHours(23, 59, 59, 999);
+
+        document.getElementById('start_date').value = minDate.toISOString().split('T')[0];
+        document.getElementById('start_time').value = minDate.toTimeString().slice(0, 5);
+        document.getElementById('end_date').value = maxDate.toISOString().split('T')[0];
+        document.getElementById('end_time').value = '23:59';  // Luôn đặt thời gian kết thúc là 23:59
+    }
+});
 
     // Xử lý sự kiện xuất dữ liệu ra Excel
     document.getElementById('exportExcel').addEventListener('click', function() {
