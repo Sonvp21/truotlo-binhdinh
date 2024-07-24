@@ -4,7 +4,7 @@
         <div data-sveltekit-preload-data
             class="bg-base-100 sticky top-0 z-20 hidden items-center gap-2 bg-opacity-90 px-4 py-2 backdrop-blur lg:flex shadow-md">
             <a href="#" aria-current="page" aria-label="Homepage" class="flex-0 btn btn-ghost px-2">
-                <div class="font-title inline-flex text-lg md:text-2xl">Bentre-shtt</div>
+                <div class="font-title inline-flex text-lg md:text-2xl">Trượt lở - Bình định</div>
             </a>
         </div>
         <div class="h-4"></div>
@@ -33,6 +33,54 @@
                                 class="group font-bold {{ Request::routeIs('admin.communes.*') ? 'active' : '' }}">
                                 <i class="far fa-map-marked-alt"></i>
                                 Xã
+                            </a>
+                        </li>
+                    </ul>
+                </details>
+            </li>
+
+            <li>
+                <details {{ Request::routeIs('admin.sessions.*') ? 'open' : '' }}>
+                    <summary class="font-semibold group">
+                        <i class="fad fa-map"></i>Dự báo 5 ngày
+                    </summary>
+                    <ul>
+                        <li>
+                            <a href="{{ route('admin.sessions.index') }}"
+                                class="group font-bold {{ Request::routeIs('admin.sessions.*') ? 'active' : '' }}">
+                                <i class="far fa-map-marked"></i>
+                                xem
+                            </a>
+                        </li>
+                        <li>
+                            <a href=""
+                                class="group font-bold {{ Request::routeIs('admin.communes.*') ? 'active' : '' }}">
+                                <i class="far fa-map-marked-alt"></i>
+                                324
+                            </a>
+                        </li>
+                    </ul>
+                </details>
+            </li>
+
+            <li>
+                <details {{-- {{ Request::routeIs('admin.districts.*') || Request::routeIs('admin.communes.*') ? 'open' : '' }} --}}>
+                    <summary class="font-semibold group">
+                        <i class="fad fa-map"></i>Cảnh báo theo giờ
+                    </summary>
+                    <ul>
+                        <li>
+                            <a href=""
+                                class="group font-bold {{ Request::routeIs('admin.districts.*') ? 'active' : '' }}">
+                                <i class="far fa-map-marked"></i>
+                                123
+                            </a>
+                        </li>
+                        <li>
+                            <a href=""
+                                class="group font-bold {{ Request::routeIs('admin.communes.*') ? 'active' : '' }}">
+                                <i class="far fa-map-marked-alt"></i>
+                                324
                             </a>
                         </li>
                     </ul>

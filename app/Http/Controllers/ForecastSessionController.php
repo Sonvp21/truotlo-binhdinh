@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class ForecastSessionController extends Controller
 {
+    public function indexView()
+    {
+        $sessions = ForecastSession::all();
+        return view('admin.days.index', ['sessions' => $sessions]);
+    }
+
+    ///test api
     public function index()
     {
         $sessions = ForecastSession::all();
@@ -123,7 +130,7 @@ class ForecastSessionController extends Controller
             'Cac_diem.*.cac_ngay.*.ngay' => 'required|integer|between:1,31',
             'Cac_diem.*.cac_ngay.*.nguy_co' => 'required|string',
         ]);
-    
+
         $session = ForecastSession::create([
             'nam' => $data['Nam'],
             'thang' => $data['Thang'],
@@ -148,7 +155,7 @@ class ForecastSessionController extends Controller
             }
         }
     
-        return response()->json(['message' => 'Phiên dự báo đã được lưu'], 201);
+        return redirect()->route('admin.sessions.index')->with('success', 'Phiên dự báo đã được lưu thành công');
     }
     
 
