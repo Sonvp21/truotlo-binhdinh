@@ -1,39 +1,82 @@
 <script>
     // Lấy dữ liệu từ controller
-    const datasets = {!! $chartData !!};
-    const datasetsB = {!! $chartDataB !!};
+    let datasets = {!! $chartData !!};
+    let datasetsB = {!! $chartDataB !!};
+    const pzChartData = {!! $pzChartData !!};
+    const pzChartData2 = {!! $pzChartData2 !!};
+    const crChartData = {!! $crChartData !!};
+    const crChartData2 = {!! $crChartData2 !!};
+    const crChartData3 = {!! $crChartData3 !!};
     const lineCount = {!! $lineCount !!};
+    console.log(crChartData3);
 
-    // Cập nhật số lượng đường
-    document.getElementById('lineCount').textContent = lineCount;
+    // Hàm để thiết lập màu và kiểu cho dataset
+    function styleDatasets(datasets, colors) {
+        datasets.forEach((dataset, index) => {
+            dataset.borderColor = colors[index % colors.length];
+            dataset.borderWidth = 2;
+            dataset.fill = false;
+            dataset.showLine = true;
+            dataset.tension = 0.2;
+        });
+    }
 
-    // Định nghĩa các màu cho từng đường
-    const colors = [
-        'rgba(75, 192, 192, 1)',
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)',
-        'rgba(201, 203, 207, 1)'
-    ];
+    // Hàm để tạo biểu đồ
+    function createLineChart(ctx, data, label, borderColor, backgroundColor, titleText) {
+        return new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: label,
+                    data: data,
+                    borderColor: borderColor,
+                    backgroundColor: backgroundColor
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: {
+                            display: true,
+                            text: titleText
+                        }
+                    },
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date and Time'
+                        }
+                    }
+                },
+                plugins: {
+                    zoom: {
+                        zoom: {
+                            wheel: {
+                                enabled: true,
+                            },
+                            pinch: {
+                                enabled: true
+                            },
+                            mode: 'xy',
+                        },
+                        pan: {
+                            enabled: true,
+                            mode: 'xy',
+                        }
+                    }
+                }
+            }
+        });
+    }
 
-    // Áp dụng màu và style cho mỗi dataset
-    datasets.forEach((dataset, index) => {
-        dataset.borderColor = colors[index % colors.length];
-        dataset.borderWidth = 2;
-        dataset.fill = false;
-        dataset.showLine = true;
-        dataset.tension = 0.2;
-    });
-    datasetsB.forEach((dataset, index) => {
-        dataset.borderColor = colors[index % colors.length];
-        dataset.borderWidth = 2;
-        dataset.fill = false;
-        dataset.showLine = true;
-        dataset.tension = 0.2;
-    });
-
+    // Hàm để tạo legend tùy chỉnh
     function generateCustomLegend(chart, containerId) {
         const legendContainer = document.getElementById(containerId);
         legendContainer.innerHTML = '';
@@ -75,6 +118,82 @@
         legendContainer.appendChild(ul);
     }
 
+    // Hàm để thiết lập toggle cho legend
+    function setupToggleLegend(chartInstance, toggleId, legendContainerId) {
+        const toggleLegend = document.getElementById(toggleId);
+        const arrowIcon = toggleLegend.querySelector('.arrow-icon');
+        const legendContainer = document.getElementById(legendContainerId);
+    
+        toggleLegend.addEventListener('click', () => {
+            legendContainer.style.display = legendContainer.style.display === 'none' ? 'block' : 'none';
+            arrowIcon.classList.toggle('up');
+            
+            if (arrowIcon.classList.contains('up')) {
+                arrowIcon.innerHTML = '&#9650;'; // Mũi tên lên
+            } else {
+                arrowIcon.innerHTML = '&#9660;'; // Mũi tên xuống
+            }
+        });
+    }
+
+    // Hàm lọc dữ liệu theo khoảng thời gian
+    function filterDataByDateRange(datasets, startDate, startTime, endDate, endTime) {
+        const start = new Date(`${startDate}T${startTime}`);
+        const end = new Date(`${endDate}T${endTime}`);
+
+        return datasets.map(dataset => {
+            if (dataset.label === 'Điểm chuẩn') return dataset;
+            
+            const filteredData = dataset.data.filter(point => {
+                const pointDate = new Date(dataset.label);
+                return pointDate >= start && pointDate <= end;
+            });
+            
+            return {...dataset, data: filteredData};
+        }).filter(dataset => dataset.data.length > 0 || dataset.label === 'Điểm chuẩn');
+    }
+
+
+    // Cập nhật số lượng đường
+    document.getElementById('lineCount').textContent = lineCount;
+
+    // Định nghĩa các màu cho từng đường
+    const colors = [
+        'rgba(75, 192, 192, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(201, 203, 207, 1)'
+    ];
+
+    // Áp dụng màu và style cho mỗi dataset
+    styleDatasets(datasets, colors);
+    styleDatasets(datasetsB, colors);
+
+// Tạo biểu đồ PZ
+const pzCtx = document.getElementById('pzChart').getContext('2d');
+createLineChart(pzCtx, pzChartData, 'Piezometer 1', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 0.2)', 'Calculated PZ1 Digit');
+
+// Tạo biểu đồ PZ2
+const pzCtx2 = document.getElementById('pzChart2').getContext('2d');
+createLineChart(pzCtx2, pzChartData2, 'Piezometer 2', 'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 0.2)', 'Calculated PZ2 Digit');
+
+// Tạo biểu đồ CR1
+const crCtx = document.getElementById('crChart').getContext('2d');
+createLineChart(crCtx, crChartData, 'Crackmeter 1', 'rgba(255, 159, 64, 1)', 'rgba(255, 159, 64, 0.2)', 'Calculated CR1 Digit');
+
+// Tạo biểu đồ CR2
+const crCtx2 = document.getElementById('crChart2').getContext('2d');
+createLineChart(crCtx2, crChartData2, 'Crackmeter 2', 'rgba(153, 102, 255, 1)', 'rgba(153, 102, 255, 0.2)', 'Calculated CR2 Digit');
+
+// Tạo biểu đồ CR3
+const crCtx3 = document.getElementById('crChart3').getContext('2d');
+createLineChart(crCtx3, crChartData3, 'Crackmeter 3', 'rgba(255, 205, 86, 1)', 'rgba(255, 205, 86, 0.2)', 'Calculated CR3 Digit');
+
+
+    // Tạo biểu đồ landslide
     const ctx = document.getElementById('landslideChart').getContext('2d');
     const landslideChart = new Chart(ctx, {
         type: 'line',
@@ -141,6 +260,7 @@
         }
     });
 
+    // Tạo biểu đồ showChartB
     const chartB = document.getElementById('showChartB').getContext('2d');
     const showChartB = new Chart(chartB, {
         type: 'line',
@@ -207,116 +327,75 @@
         }
     });
 
+    // Tạo legend tùy chỉnh
     generateCustomLegend(landslideChart, 'legendContainerA');
     generateCustomLegend(showChartB, 'legendContainerB');
 
-    // Thêm chức năng ẩn/hiện legend cho cả hai biểu đồ
-    function setupToggleLegend(chartInstance, toggleId, legendContainerId) {
-        const toggleLegend = document.getElementById(toggleId);
-        const arrowIcon = toggleLegend.querySelector('.arrow-icon');
-        const legendContainer = document.getElementById(legendContainerId);
-    
-        toggleLegend.addEventListener('click', () => {
-            legendContainer.style.display = legendContainer.style.display === 'none' ? 'block' : 'none';
-            arrowIcon.classList.toggle('up');
-            
-            // Thay đổi nội dung của icon
-            if (arrowIcon.classList.contains('up')) {
-                arrowIcon.innerHTML = '&#9650;'; // Mũi tên lên
-            } else {
-                arrowIcon.innerHTML = '&#9660;'; // Mũi tên xuống
-            }
-        });
-    }
-
+    // Thiết lập toggle cho legend
     setupToggleLegend(landslideChart, 'toggleLegendA', 'legendContainerA');
     setupToggleLegend(showChartB, 'toggleLegendB', 'legendContainerB');
 
-    // Xử lý form chọn khoảng thời gian
-document.getElementById('dateRangeForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const startDate = document.getElementById('start_date').value;
-    const startTime = document.getElementById('start_time').value;
-    const endDate = document.getElementById('end_date').value;
-    const endTime = document.getElementById('end_time').value;
-    
-    // Chuyển hướng với tham số mới
-    window.location.href = `${window.location.pathname}?start_date=${startDate}&start_time=${startTime}&end_date=${endDate}&end_time=${endTime}`;
-});
-
-// Lọc dữ liệu theo thời gian
-function filterDataByDateRange(datasets, startDate, startTime, endDate, endTime) {
-    const start = new Date(`${startDate}T${startTime}`);
-    const end = new Date(`${endDate}T${endTime}`);
-
-    return datasets.map(dataset => {
-        if (dataset.label === 'Điểm chuẩn') return dataset;
+    // Xử lý form lọc dữ liệu theo khoảng thời gian
+    document.getElementById('dateRangeForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const startDate = document.getElementById('start_date').value;
+        const startTime = document.getElementById('start_time').value;
+        const endDate = document.getElementById('end_date').value;
+        const endTime = document.getElementById('end_time').value;
         
-        const filteredData = dataset.data.filter(point => {
-            const pointDate = new Date(dataset.label);
-            return pointDate >= start && pointDate <= end;
+        window.location.href = `${window.location.pathname}?start_date=${startDate}&start_time=${startTime}&end_date=${endDate}&end_time=${endTime}`;
+    });
+
+    // Lọc dữ liệu theo khoảng thời gian từ URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const startDate = urlParams.get('start_date');
+    const startTime = urlParams.get('start_time') || '00:00';
+    const endDate = urlParams.get('end_date');
+    const endTime = urlParams.get('end_time') || '23:59';
+
+    if (startDate && endDate) {
+        datasets = filterDataByDateRange(datasets, startDate, startTime, endDate, endTime);
+        datasetsB = filterDataByDateRange(datasetsB, startDate, startTime, endDate, endTime);
+        
+        landslideChart.data.datasets = datasets;
+        landslideChart.update();
+        
+        showChartB.data.datasets = datasetsB;
+        showChartB.update();
+        
+        document.getElementById('lineCount').textContent = datasets.length - 1; // Trừ 1 vì có điểm chuẩn
+    }
+
+    // Thiết lập giá trị mặc định cho các ô chọn ngày giờ
+    document.addEventListener('DOMContentLoaded', function() {
+        let minDate = null;
+        let maxDate = null;
+
+        datasets.forEach(dataset => {
+            if (dataset.label !== 'Điểm chuẩn') {
+                const date = new Date(dataset.label);
+                if (!minDate || date < minDate) minDate = date;
+                if (!maxDate || date > maxDate) maxDate = date;
+            }
         });
-        
-        return {...dataset, data: filteredData};
-    }).filter(dataset => dataset.data.length > 0 || dataset.label === 'Điểm chuẩn');
-}
 
-// Áp dụng bộ lọc nếu có tham số thời gian
-const urlParams = new URLSearchParams(window.location.search);
-const startDate = urlParams.get('start_date');
-const startTime = urlParams.get('start_time') || '00:00';
-const endDate = urlParams.get('end_date');
-const endTime = urlParams.get('end_time') || '23:59';
-
-if (startDate && endDate) {
-    datasets = filterDataByDateRange(datasets, startDate, startTime, endDate, endTime);
-    datasetsB = filterDataByDateRange(datasetsB, startDate, startTime, endDate, endTime);
-    
-    // Cập nhật biểu đồ
-    landslideChart.data.datasets = datasets;
-    landslideChart.update();
-    
-    showChartB.data.datasets = datasetsB;
-    showChartB.update();
-    
-    // Cập nhật số lượng đường
-    document.getElementById('lineCount').textContent = datasets.length - 1; // Trừ 1 vì có điểm chuẩn
-}
-
-// Đặt giá trị ban đầu cho các trường input date và time
-document.addEventListener('DOMContentLoaded', function() {
-    const datasets = {!! $chartData !!};
-    let minDate = null;
-    let maxDate = null;
-
-    datasets.forEach(dataset => {
-        if (dataset.label !== 'Điểm chuẩn') {
-            const date = new Date(dataset.label);
-            if (!minDate || date < minDate) minDate = date;
-            if (!maxDate || date > maxDate) maxDate = date;
+        if (minDate && maxDate) {
+            document.getElementById('start_date').value = minDate.toISOString().split('T')[0];
+            document.getElementById('start_time').value = minDate.toTimeString().slice(0, 5);
+            document.getElementById('end_date').value = maxDate.toISOString().split('T')[0];
+            document.getElementById('end_time').value = maxDate.toTimeString().slice(0, 5);
         }
     });
 
-    if (minDate && maxDate) {
-        document.getElementById('start_date').value = minDate.toISOString().split('T')[0];
-        document.getElementById('start_time').value = minDate.toTimeString().slice(0, 5);
-        document.getElementById('end_date').value = maxDate.toISOString().split('T')[0];
-        document.getElementById('end_time').value = maxDate.toTimeString().slice(0, 5);
-    }
-});
+    // Xử lý sự kiện xuất dữ liệu ra Excel
+    document.getElementById('exportExcel').addEventListener('click', function() {
+        const startDate = document.getElementById('start_date').value;
+        const startTime = document.getElementById('start_time').value;
+        const endDate = document.getElementById('end_date').value;
+        const endTime = document.getElementById('end_time').value;
 
-document.getElementById('exportExcel').addEventListener('click', function() {
-    var startDate = document.getElementById('start_date').value;
-    var startTime = document.getElementById('start_time').value;
-    var endDate = document.getElementById('end_date').value;
-    var endTime = document.getElementById('end_time').value;
+        const url = `/export-excel?start_date=${encodeURIComponent(startDate)}&start_time=${encodeURIComponent(startTime)}&end_date=${encodeURIComponent(endDate)}&end_time=${encodeURIComponent(endTime)}`;
 
-    var url = '/export-excel?' + 
-              'start_date=' + encodeURIComponent(startDate) + 
-              '&start_time=' + encodeURIComponent(startTime) + 
-              '&end_date=' + encodeURIComponent(endDate) + 
-              '&end_time=' + encodeURIComponent(endTime);
-
-    window.location.href = url;
-});
+        window.location.href = url;
+    });
 </script>
