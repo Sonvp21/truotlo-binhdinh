@@ -194,17 +194,17 @@
                     data.forEach(record => {
                         let recordElement = document.createElement('div');
                         recordElement.innerHTML = `
-                    <h4>Phiên cảnh báo: Giờ ${record.Gio} - Ngày ${record.Ngay} - Tháng ${record.Thang} - Năm ${record.Nam}</h4>
+                    <h4 style="margin-top: 20px; font-weight: bold">Phiên cảnh báo: Giờ ${record.Gio} - Ngày ${record.Ngay} - Tháng ${record.Thang} - Năm ${record.Nam}</h4>
                     ${record.Cac_diem.map(point => `
                             <div>
-                                <h5>Tên điểm: ${point.ten_diem}</h5>
-                                <p>Vị trí: ${point.vi_tri}</p>
-                                <p>Kinh độ: ${point.kinh_do}</p>
-                                <p>Vĩ độ: ${point.vi_do}</p>
-                                <p>Tỉnh: ${point.tinh}</p>
-                                <p>Huyện: ${point.huyen}</p>
-                                <p>Xã: ${point.xa}</p>
-                                <p>Nguy cơ: ${point.nguy_co}</p>
+                                <h5 style="margin-left: 30px">Tên điểm: ${point.ten_diem}</h5>
+                                <p style="margin-left: 30px">Vị trí: ${point.vi_tri}</p>
+                                <p style="margin-left: 30px">Kinh độ: ${point.kinh_do}</p>
+                                <p style="margin-left: 30px">Vĩ độ: ${point.vi_do}</p>
+                                <p style="margin-left: 30px">Tỉnh: ${point.tinh}</p>
+                                <p style="margin-left: 30px">Huyện: ${point.huyen}</p>
+                                <p style="margin-left: 30px">Xã: ${point.xa}</p>
+                                <p style="margin-left: 30px">Nguy cơ: ${point.nguy_co}</p>
                             </div>
                         `).join('')}
                 `;

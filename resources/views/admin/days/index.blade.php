@@ -159,7 +159,7 @@
                     <p>Xã: ${point.xa}</p>
                     <h6>Các ngày:</h6>
                     <ul>
-                        ${point.cac_ngay.map(risk => `<li>Ngày: ${risk.ngay} - Nguy cơ: ${risk.nguy_co}</li>`).join('')}
+                        ${point.cac_ngay.map(risk => `<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ngày: ${risk.ngay} - Nguy cơ: ${risk.nguy_co}</li>`).join('')}
                     </ul>
                 `;
                         modalContent.appendChild(pointElement);
@@ -194,19 +194,19 @@
                     data.forEach(session => {
                         let sessionElement = document.createElement('div');
                         sessionElement.innerHTML = `
-                    <h4>Phiên dự báo ${session.Nam} - ${session.Thang}</h4>
+                    <h4 style="margin-top: 20px; font-weight: bold">Phiên dự báo ${session.Nam} - ${session.Thang}</h4>
                     ${session.Cac_diem.map(point => `
                                                 <div>
-                                                    <h5>Tên điểm: ${point.ten_diem}</h5>
-                                                    <p>Vị trí: ${point.vi_tri}</p>
-                                                    <p>Kinh độ: ${point.kinh_do}</p>
-                                                    <p>Vĩ độ: ${point.vi_do}</p>
-                                                    <p>Tỉnh: ${point.tinh}</p>
-                                                    <p>Huyện: ${point.huyen}</p>
-                                                    <p>Xã: ${point.xa}</p>
-                                                    <h6>Các ngày:</h6>
+                                                    <h5 style="margin-left: 30px>Tên điểm: ${point.ten_diem}</h5>
+                                                    <p style="margin-left: 30px>Vị trí: ${point.vi_tri}</p>
+                                                    <p style="margin-left: 30px>Kinh độ: ${point.kinh_do}</p>
+                                                    <p style="margin-left: 30px>Vĩ độ: ${point.vi_do}</p>
+                                                    <p style="margin-left: 30px>Tỉnh: ${point.tinh}</p>
+                                                    <p style="margin-left: 30px>Huyện: ${point.huyen}</p>
+                                                    <p style="margin-left: 30px>Xã: ${point.xa}</p>
+                                                    <h6 style="margin-left: 30px>Các ngày:</h6>
                                                     <ul>
-                                                        ${point.cac_ngay.map(risk => `<li>Ngày: ${risk.ngay} - Nguy cơ: ${risk.nguy_co}</li>`).join('')}
+                                                        ${point.cac_ngay.map(risk => `<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ngày: ${risk.ngay} - Nguy cơ: ${risk.nguy_co}</li>`).join('')}
                                                     </ul>
                                                 </div>
                                             `).join('')}
