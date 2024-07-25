@@ -15,17 +15,22 @@
 
             <!-- Thông báo lỗi nếu có -->
             <div id="form-error" class="text-red-500 mt-2"></div>
-
+            <style>
+                .input-bordered p {
+                    width: 67px;
+                    text-align: center;
+                }
+            </style>
             <div class="mt-4">
                 <!-- Năm -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
-                    Năm
+                    <p>Năm</p>
                     <input type="number" id="nam" name="Nam" required min="1900" max="2100" class="grow" placeholder="Nhập năm">
                 </label>
 
                 <!-- Tháng -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
-                    Tháng
+                    <p>Tháng</p>
                     <input type="number" id="thang" name="Thang" required min="1" max="12" class="grow" placeholder="Nhập tháng">
                 </label>
 
@@ -50,42 +55,42 @@
         pointDiv.innerHTML = `
             <h4 class="font-bold mb-2">Điểm Dự Báo</h4>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Tên Điểm
+                <p>Tên Điểm</p>
                 <input type="text" name="Cac_diem[${pointCount}][ten_diem]" required class="grow" placeholder="Nhập tên điểm" maxlength="6">
             </label>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Vị Trí
+                <p>Vị Trí</p>
                 <input type="text" name="Cac_diem[${pointCount}][vi_tri]" required class="grow" placeholder="Nhập vị trí">
             </label>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Kinh Độ
+                <p>Kinh Độ</p>
                 <input type="number" name="Cac_diem[${pointCount}][kinh_do]" step="0.000001" required class="grow" placeholder="Nhập kinh độ">
             </label>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Vĩ Độ
+                <p>Vĩ Độ</p>
                 <input type="number" name="Cac_diem[${pointCount}][vi_do]" step="0.000001" required class="grow" placeholder="Nhập vĩ độ">
             </label>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Tỉnh
+                <p>Tỉnh</p>
                 <input type="text" name="Cac_diem[${pointCount}][tinh]" required class="grow" placeholder="Nhập tỉnh">
             </label>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Huyện
+                <p>Huyện</p>
                 <input type="text" name="Cac_diem[${pointCount}][huyen]" required class="grow" placeholder="Nhập huyện">
             </label>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Xã
+                <p>Xã</p>
                 <input type="text" name="Cac_diem[${pointCount}][xa]" required class="grow" placeholder="Nhập xã">
             </label>
-            <div id="days-container-${pointCount}">
+            <div id="days-container-${pointCount}" style="margin-top: 10px">
                 <!-- Các ngày cho điểm này -->
-                <div class="day-entry">
+                <div class="day-entry" style="margin-left: 20px">
                     <label class="input input-bordered flex items-center gap-2 mb-2">
-                        Ngày
+                        <p>Ngày</p>
                         <input type="number" name="Cac_diem[${pointCount}][cac_ngay][0][ngay]" required class="grow" placeholder="Nhập ngày" min="1" max="31">
                     </label>
                     <label class="input input-bordered flex items-center gap-2 mb-2">
-                        Nguy Cơ
+                        <p>Nguy Cơ</p>
                         <input type="text" name="Cac_diem[${pointCount}][cac_ngay][0][nguy_co]" required class="grow" placeholder="Nhập nguy cơ">
                     </label>
                 </div>
@@ -105,14 +110,15 @@
         const dayDiv = document.createElement('div');
         dayDiv.classList.add('day-entry', 'mb-2');
         dayDiv.innerHTML = `
+        <div style="margin-left: 20px; margin-top:20px">
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Ngày
+                <p>Ngày</p>
                 <input type="number" name="Cac_diem[${pointDiv.querySelector('[name^="Cac_diem"]').name.match(/\[(\d+)\]/)[1]}][cac_ngay][${dayCount}][ngay]" required class="grow" placeholder="Nhập ngày" min="1" max="31">
             </label>
             <label class="input input-bordered flex items-center gap-2 mb-2">
-                Nguy Cơ
+                <p>Nguy Cơ</p>
                 <input type="text" name="Cac_diem[${pointDiv.querySelector('[name^="Cac_diem"]').name.match(/\[(\d+)\]/)[1]}][cac_ngay][${dayCount}][nguy_co]" required class="grow" placeholder="Nhập nguy cơ">
-            </label>
+            </label></div>
         `;
         daysContainer.appendChild(dayDiv);
     }

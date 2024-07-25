@@ -11,7 +11,7 @@
             @csrf
             <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
                 onclick="document.getElementById('my_modal_post_json').close()">✕</button>
-            <h3 class="text-lg font-bold">Post JSON phiên dự báo</h3>
+            <h3 class="text-lg font-bold">Post JSON phiên cảnh báo</h3>
 
             <!-- Thông báo lỗi nếu có -->
             <div id="form-error-json" class="text-red-500 mt-2"></div>
@@ -22,7 +22,7 @@
                     File JSON
                     <input type="file" name="file" accept=".json" required class="grow">
                 </label>
-                <button type="submit" class="btn mt-4">Lưu Phiên Dự Báo</button>
+                <button type="submit" class="btn mt-4">Lưu Phiên cảnh báo</button>
             </div>
         </form>
     </div>

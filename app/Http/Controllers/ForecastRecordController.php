@@ -124,7 +124,7 @@ class ForecastRecordController extends Controller
     
         // Kiểm tra xem JSON có hợp lệ không
         if (json_last_error() !== JSON_ERROR_NONE) {
-            return response()->json(['error' => 'Invalid JSON file.'], 400);
+            return redirect()->back()->with('error', 'Tệp JSON không hợp lệ.');
         }
     
         // Validate the JSON data
@@ -145,7 +145,7 @@ class ForecastRecordController extends Controller
         ]);
     
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return redirect()->back()->with('error', 'Dữ liệu JSON không hợp lệ.')->withErrors($validator);
         }
     
         $record = ForecastRecord::create([

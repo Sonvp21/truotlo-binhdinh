@@ -11,7 +11,7 @@
             @csrf
             <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
                 onclick="document.getElementById('my_modal_post').close()">✕</button>
-            <h3 class="text-lg font-bold">Post phiên dự báo</h3>
+            <h3 class="text-lg font-bold">Post phiên cảnh báo</h3>
 
             <!-- Thông báo lỗi nếu có -->
             <div id="form-error" class="text-red-500 mt-2"></div>
@@ -47,10 +47,10 @@
                 </label>
 
                 <div id="points-container">
-                    <!-- Các điểm dự báo sẽ được thêm vào đây bằng JavaScript -->
+                    <!-- Các điểm cảnh báo sẽ được thêm vào đây bằng JavaScript -->
                 </div>
                 <button type="button" onclick="addPoint()" class="btn mt-4">Thêm Điểm</button>
-                <button type="submit" class="btn mt-4">Lưu Phiên Dự Báo</button>
+                <button type="submit" class="btn mt-4">Lưu Phiên cảnh báo</button>
             </div>
         </form>
     </div>
@@ -65,7 +65,7 @@
         const pointDiv = document.createElement('div');
         pointDiv.classList.add('point', 'mb-4', 'p-4', 'border', 'border-gray-300', 'rounded');
         pointDiv.innerHTML = `
-            <h4 class="font-bold mb-2">Điểm Dự Báo</h4>
+            <h4 class="font-bold mb-2">Điểm cảnh báo</h4>
             <label class="input input-bordered flex items-center gap-2 mb-2">
                 <p>Tên Điểm</p>
                 <input type="text" name="Cac_diem[${pointCount}][ten_diem]" required class="grow" placeholder="Nhập tên điểm" maxlength="6">

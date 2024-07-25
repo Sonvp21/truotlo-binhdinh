@@ -7,7 +7,36 @@
                         Danh sách các phiên dự báo
                     </span>
                 </div>
-                <x-admin.alerts.success />
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-error">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                <style>
+                    .alert-success {
+                        background-color: #d4edda;
+                        color: #155724;
+                        padding: 10px;
+                        border-radius: 5px;
+                        margin-bottom: 15px;
+                    }
+                    
+                    .alert-error {
+                        background-color: #f8d7da;
+                        color: #721c24;
+                        padding: 10px;
+                        border-radius: 5px;
+                        margin-bottom: 15px;
+                    }
+                    </style>
+                    
+
                 <div class="mt-6">
                     <div class="grid-cols-3 gap-4 pb-3 flex">
                         <div
@@ -18,12 +47,6 @@
                                     GET ALL
                                 </button>
                             </div>
-                            {{-- <div class="mx-2 group hover:text-teal-500">
-                                <button type="button" class="btn glass contents group-hover:text-teal-500" 
-                                onclick="openModal('add-session-modal')">
-                                    POST
-                                </button>
-                            </div>                             --}}
                             @include('admin.days.post')
                             @include('admin.days.post_json')
                         </div>
@@ -134,19 +157,19 @@
     <script>
         let sessionData = {}; // Biến để lưu trữ dữ liệu phiên dự báo
         let allSessionsData = null; // Biến để lưu trữ dữ liệu tất cả các phiên dự báo
-
+    
         function openModal(sessionId) {
             fetch(`/api/binhdinh/du_bao_5_ngay/${sessionId}`)
                 .then(response => response.json())
                 .then(data => {
                     sessionData[sessionId] = data; // Lưu dữ liệu vào biến sessionData
-
+    
                     let modalContent = document.getElementById('modal-content-' + sessionId);
                     modalContent.innerHTML = '';
-
+    
                     let title = document.getElementById('modal-title-' + sessionId);
                     title.innerText = `Phiên dự báo ${data.Nam} - ${data.Thang}`;
-
+    
                     data.Cac_diem.forEach(point => {
                         let pointElement = document.createElement('div');
                         pointElement.innerHTML = `
@@ -164,12 +187,15 @@
                 `;
                         modalContent.appendChild(pointElement);
                     });
-
+    
                     document.getElementById('my_modal_' + sessionId).showModal();
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi mở phiên dự báo.');
+                });
         }
-
+    
         function toggleView(sessionId) {
             let modalContent = document.getElementById('modal-content-' + sessionId);
             let toggleButton = document.getElementById('toggle-view-' + sessionId);
@@ -181,30 +207,30 @@
                 toggleButton.innerText = 'Xem JSON';
             }
         }
-
+    
         function getAllSessions() {
             fetch('/api/binhdinh/du_bao_5_ngay')
                 .then(response => response.json())
                 .then(data => {
                     allSessionsData = data; // Lưu dữ liệu vào biến allSessionsData
-
+    
                     let allSessionsContent = document.getElementById('all-sessions-content');
                     allSessionsContent.innerHTML = '';
-
+    
                     data.forEach(session => {
                         let sessionElement = document.createElement('div');
                         sessionElement.innerHTML = `
                     <h4 style="margin-top: 20px; font-weight: bold">Phiên dự báo ${session.Nam} - ${session.Thang}</h4>
                     ${session.Cac_diem.map(point => `
                                                 <div>
-                                                    <h5 style="margin-left: 30px>Tên điểm: ${point.ten_diem}</h5>
-                                                    <p style="margin-left: 30px>Vị trí: ${point.vi_tri}</p>
-                                                    <p style="margin-left: 30px>Kinh độ: ${point.kinh_do}</p>
-                                                    <p style="margin-left: 30px>Vĩ độ: ${point.vi_do}</p>
-                                                    <p style="margin-left: 30px>Tỉnh: ${point.tinh}</p>
-                                                    <p style="margin-left: 30px>Huyện: ${point.huyen}</p>
-                                                    <p style="margin-left: 30px>Xã: ${point.xa}</p>
-                                                    <h6 style="margin-left: 30px>Các ngày:</h6>
+                                                    <h5 style="margin-left: 30px;">Tên điểm: ${point.ten_diem}</h5>
+                                                    <p style="margin-left: 30px;">Vị trí: ${point.vi_tri}</p>
+                                                    <p style="margin-left: 30px;">Kinh độ: ${point.kinh_do}</p>
+                                                    <p style="margin-left: 30px;">Vĩ độ: ${point.vi_do}</p>
+                                                    <p style="margin-left: 30px;">Tỉnh: ${point.tinh}</p>
+                                                    <p style="margin-left: 30px;">Huyện: ${point.huyen}</p>
+                                                    <p style="margin-left: 30px;">Xã: ${point.xa}</p>
+                                                    <h6 style="margin-left: 30px;">Các ngày:</h6>
                                                     <ul>
                                                         ${point.cac_ngay.map(risk => `<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ngày: ${risk.ngay} - Nguy cơ: ${risk.nguy_co}</li>`).join('')}
                                                     </ul>
@@ -213,12 +239,15 @@
                 `;
                         allSessionsContent.appendChild(sessionElement);
                     });
-
+    
                     document.getElementById('my_modal_full').showModal();
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi tải tất cả các phiên dự báo.');
+                });
         }
-
+    
         function toggleAllView() {
             let allSessionsContent = document.getElementById('all-sessions-content');
             let toggleButton = document.getElementById('toggle-all-view');
@@ -234,7 +263,7 @@
                 toggleButton.innerText = 'Xem JSON';
             }
         }
-
+    
         function copyToClipboard() {
             let textarea = document.getElementById('json-textarea');
             if (textarea.style.display === 'block') {
@@ -246,4 +275,5 @@
             }
         }
     </script>
+    
 </x-admin-layout>
