@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ScienceInformationController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\Support\TinymceController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ForecastRecordController;
 use App\Http\Controllers\ForecastSessionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,8 @@ Route::middleware('auth')->group(function () {
 // API
 
 Route::get('/sessions', [ForecastSessionController::class, 'indexView'])->name('admin.sessions.index');
+
+Route::get('/records', [ForecastRecordController::class, 'indexView'])->name('admin.records.index');
 
 
 require __DIR__.'/auth.php';

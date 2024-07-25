@@ -33,5 +33,8 @@ Route::apiResource('binhdinh/du_bao_5_ngay', ForecastSessionController::class);
 //post file json
 Route::post('binhdinh/du_bao_5_ngay/json', [ForecastSessionController::class, 'storeFromJson']);
 
+
 ///Cảnh báo theo giờ
 Route::apiResource('binhdinh/canh_bao_gio', ForecastRecordController::class);
+//post file json
+Route::post('binhdinh/canh_bao_gio/json', [ForecastRecordController::class, 'storeFromJson']);

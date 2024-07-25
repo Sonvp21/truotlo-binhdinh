@@ -39,52 +39,20 @@
                 </details>
             </li>
 
-            <li>
-                <details {{ Request::routeIs('admin.sessions.*') ? 'open' : '' }}>
-                    <summary class="font-semibold group">
-                        <i class="fad fa-map"></i>Dự báo 5 ngày
-                    </summary>
-                    <ul>
-                        <li>
-                            <a href="{{ route('admin.sessions.index') }}"
-                                class="group font-bold {{ Request::routeIs('admin.sessions.*') ? 'active' : '' }}">
-                                <i class="far fa-map-marked"></i>
-                                xem
-                            </a>
-                        </li>
-                        <li>
-                            <a href=""
-                                class="group font-bold {{ Request::routeIs('admin.communes.*') ? 'active' : '' }}">
-                                <i class="far fa-map-marked-alt"></i>
-                                324
-                            </a>
-                        </li>
-                    </ul>
-                </details>
+
+            <li {{ Request::routeIs('admin.sessions.*') ? 'open' : '' }}>
+                <a href="{{ route('admin.sessions.index') }}"
+                    class="group font-bold {{ Request::routeIs('admin.sessions.*') ? 'active' : '' }}">
+                    <i class="far fa-map-marked"></i>
+                    Dự báo 5 ngày
+                </a>
             </li>
 
-            <li>
-                <details {{-- {{ Request::routeIs('admin.districts.*') || Request::routeIs('admin.communes.*') ? 'open' : '' }} --}}>
-                    <summary class="font-semibold group">
-                        <i class="fad fa-map"></i>Cảnh báo theo giờ
-                    </summary>
-                    <ul>
-                        <li>
-                            <a href=""
-                                class="group font-bold {{ Request::routeIs('admin.districts.*') ? 'active' : '' }}">
-                                <i class="far fa-map-marked"></i>
-                                123
-                            </a>
-                        </li>
-                        <li>
-                            <a href=""
-                                class="group font-bold {{ Request::routeIs('admin.communes.*') ? 'active' : '' }}">
-                                <i class="far fa-map-marked-alt"></i>
-                                324
-                            </a>
-                        </li>
-                    </ul>
-                </details>
+            <li {{ Request::routeIs('admin.records.*') ? 'open' : '' }}>
+                <a href="{{ route('admin.records.index') }}" class="group font-bold {{ Request::routeIs('admin.records.*') ? 'active' : '' }}">
+                    <i class="far fa-map-marked"></i>
+                    Cảnh báo theo giờ
+                </a>
             </li>
 
             <li></li>

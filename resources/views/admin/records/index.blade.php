@@ -4,7 +4,7 @@
             <div class="p-6 w-full">
                 <div class="text-gray-800 text-sm font-semibold leading-tight">
                     <span class="text-gray-800 text-sm flex items-center gap-2 font-semibold leading-tight">
-                        Danh sách các phiên dự báo
+                        Danh sách cảnh báo theo giờ
                     </span>
                 </div>
                 <x-admin.alerts.success />
@@ -13,19 +13,19 @@
                         <div
                             class="ml-auto h-full flex flex-col md:flex-row self-center justify-self-center lg:items-center place-content-center">
                             <div class="mx-2 group hover:text-teal-500">
-                                <button onclick="getAllSessions()" type="button"
+                                <button onclick="getAllRecords()" type="button"
                                     class="btn glass contents group-hover:text-teal-500">
                                     GET ALL
                                 </button>
                             </div>
                             {{-- <div class="mx-2 group hover:text-teal-500">
                                 <button type="button" class="btn glass contents group-hover:text-teal-500" 
-                                onclick="openModal('add-session-modal')">
+                                onclick="openModal('add-record-modal')">
                                     POST
                                 </button>
                             </div>                             --}}
-                            @include('admin.days.post')
-                            @include('admin.days.post_json')
+                            @include('admin.records.post')
+                            @include('admin.records.post_json')
                         </div>
                         <dialog id="my_modal_full" class="modal">
                             <div class="modal-box">
@@ -40,7 +40,7 @@
                                 </div>
                                 <textarea id="json-textarea" style="position: absolute; left: -9999px;"></textarea>
 
-                                <div id="all-sessions-content" class="py-4"></div>
+                                <div id="all-records-content" class="py-4"></div>
                             </div>
 
                         </dialog>
@@ -56,33 +56,34 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($sessions as $index => $session)
+                                    @foreach ($records as $index => $record)
                                         <tr>
-                                            <th>{{ $sessions->firstItem() + $index }}</th>
+                                            <th>{{ $records->firstItem() + $index }}</th>
                                             <td>
-                                                <button onclick="openModal({{ $session->id }})">
-                                                    Phiên dự báo {{ $session->nam }} - {{ $session->thang }}
+                                                <button onclick="openModal({{ $record->id }})">
+                                                    Giờ {{ $record->gio }} - Ngày {{ $record->ngay }} -
+                                                    {{ $record->thang }} - {{ $record->nam }}
                                                 </button>
                                             </td>
                                             <td class="flex gap-3">
-                                                <button onclick="openModal({{ $session->id }})"><x-heroicon-s-eye
+                                                <button onclick="openModal({{ $record->id }})"><x-heroicon-s-eye
                                                         class="size-4 text-green-600" />
                                                 </button>
 
                                                 {{-- Xoá  --}}
-                                                <form id="delete-form-{{ $session->id }}"
-                                                    action="{{ url('api/binhdinh/du_bao_5_ngay/' . $session->id) }}"
+                                                <form id="delete-form-{{ $record->id }}"
+                                                    action="{{ url('api/binhdinh/canh_bao_gio/' . $record->id) }}"
                                                     method="POST" style="display: none;">
                                                     @csrf
                                                     @method('DELETE')
                                                 </form>
-                                                <button type="button" onclick="confirmDelete({{ $session->id }})">
+                                                <button type="button" onclick="confirmDelete({{ $record->id }})">
                                                     <x-heroicon-o-trash class="size-4 text-red-500" />
                                                 </button>
                                                 <script>
-                                                    function confirmDelete(sessionId) {
-                                                        if (confirm('Bạn có chắc chắn muốn xóa phiên dự báo này?')) {
-                                                            fetch(`/api/binhdinh/du_bao_5_ngay/${sessionId}`, {
+                                                    function confirmDelete(recordId) {
+                                                        if (confirm('Bạn có chắc chắn muốn xóa cảnh báo này?')) {
+                                                            fetch(`/api/binhdinh/canh_bao_gio/${recordId}`, {
                                                                     method: 'DELETE',
                                                                     headers: {
                                                                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -109,21 +110,22 @@
                     </div>
                 </div>
                 <div class="mt-4">
-                    {{ $sessions->links() }}
+                    {{ $records->links() }}
                 </div>
             </div>
-            @foreach ($sessions as $session)
-                <dialog id="my_modal_{{ $session->id }}" class="modal">
+            @foreach ($records as $record)
+                <dialog id="my_modal_{{ $record->id }}" class="modal">
                     <div class="modal-box">
                         <form method="dialog">
                             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                         </form>
-                        <h3 class="text-lg font-bold" id="modal-title-{{ $session->id }}">Phiên dự báo
-                            {{ $session->nam }} - {{ $session->thang }}</h3>
-                        <button onclick="toggleView({{ $session->id }})" id="toggle-view-{{ $session->id }}"
+                        <h3 class="text-lg font-bold" id="modal-title-{{ $record->id }}">Phiên dự báo
+                            Giờ {{ $record->thang }} - Ngày {{ $record->ngay }} - {{ $record->thang }} -
+                            {{ $record->nam }} </h3>
+                        <button onclick="toggleView({{ $record->id }})" id="toggle-view-{{ $record->id }}"
                             class="btn mt-4">Xem JSON</button>
 
-                        <div id="modal-content-{{ $session->id }}">
+                        <div id="modal-content-{{ $record->id }}">
                             <!-- Nội dung chi tiết phiên dự báo sẽ được tải vào đây -->
                         </div>
                     </div>
@@ -132,20 +134,21 @@
         </div>
     </div>
     <script>
-        let sessionData = {}; // Biến để lưu trữ dữ liệu phiên dự báo
-        let allSessionsData = null; // Biến để lưu trữ dữ liệu tất cả các phiên dự báo
+        let recordData = {}; // Biến để lưu trữ dữ liệu phiên dự báo
+        let allrecordsData = null; // Biến để lưu trữ dữ liệu tất cả các phiên dự báo
 
-        function openModal(sessionId) {
-            fetch(`/api/binhdinh/du_bao_5_ngay/${sessionId}`)
+        function openModal(recordId) {
+            fetch(`/api/binhdinh/canh_bao_gio/${recordId}`)
                 .then(response => response.json())
                 .then(data => {
-                    sessionData[sessionId] = data; // Lưu dữ liệu vào biến sessionData
+                    recordData[recordId] = data; // Lưu dữ liệu vào biến recordData
 
-                    let modalContent = document.getElementById('modal-content-' + sessionId);
+                    let modalContent = document.getElementById('modal-content-' + recordId);
                     modalContent.innerHTML = '';
 
-                    let title = document.getElementById('modal-title-' + sessionId);
-                    title.innerText = `Phiên dự báo ${data.Nam} - ${data.Thang}`;
+                    let title = document.getElementById('modal-title-' + recordId);
+                    title.innerText =
+                        `Phiên cảnh báo: Giờ ${data.Gio} - Ngày ${data.Ngay} - ${data.Thang} - ${data.Nam}`;
 
                     data.Cac_diem.forEach(point => {
                         let pointElement = document.createElement('div');
@@ -157,61 +160,55 @@
                     <p>Tỉnh: ${point.tinh}</p>
                     <p>Huyện: ${point.huyen}</p>
                     <p>Xã: ${point.xa}</p>
-                    <h6>Các ngày:</h6>
-                    <ul>
-                        ${point.cac_ngay.map(risk => `<li>Ngày: ${risk.ngay} - Nguy cơ: ${risk.nguy_co}</li>`).join('')}
-                    </ul>
-                `;
+                    <p>Nguy cơ: ${point.nguy_co}</p>
+                        `;
                         modalContent.appendChild(pointElement);
                     });
 
-                    document.getElementById('my_modal_' + sessionId).showModal();
+                    document.getElementById('my_modal_' + recordId).showModal();
                 })
                 .catch(error => console.error('Error:', error));
         }
 
-        function toggleView(sessionId) {
-            let modalContent = document.getElementById('modal-content-' + sessionId);
-            let toggleButton = document.getElementById('toggle-view-' + sessionId);
+        function toggleView(recordId) {
+            let modalContent = document.getElementById('modal-content-' + recordId);
+            let toggleButton = document.getElementById('toggle-view-' + recordId);
             if (toggleButton.innerText === 'Xem JSON') {
-                modalContent.innerHTML = '<pre>' + JSON.stringify(sessionData[sessionId], null, 2) + '</pre>';
+                modalContent.innerHTML = '<pre>' + JSON.stringify(recordData[recordId], null, 2) + '</pre>';
                 toggleButton.innerText = 'Xem bình thường';
             } else {
-                openModal(sessionId);
+                openModal(recordId);
                 toggleButton.innerText = 'Xem JSON';
             }
         }
 
-        function getAllSessions() {
-            fetch('/api/binhdinh/du_bao_5_ngay')
+        function getAllRecords() {
+            fetch('/api/binhdinh/canh_bao_gio')
                 .then(response => response.json())
                 .then(data => {
-                    allSessionsData = data; // Lưu dữ liệu vào biến allSessionsData
+                    allrecordsData = data; // Lưu dữ liệu vào biến allrecordsData
 
-                    let allSessionsContent = document.getElementById('all-sessions-content');
-                    allSessionsContent.innerHTML = '';
+                    let allrecordsContent = document.getElementById('all-records-content');
+                    allrecordsContent.innerHTML = '';
 
-                    data.forEach(session => {
-                        let sessionElement = document.createElement('div');
-                        sessionElement.innerHTML = `
-                    <h4>Phiên dự báo ${session.Nam} - ${session.Thang}</h4>
-                    ${session.Cac_diem.map(point => `
-                                                <div>
-                                                    <h5>Tên điểm: ${point.ten_diem}</h5>
-                                                    <p>Vị trí: ${point.vi_tri}</p>
-                                                    <p>Kinh độ: ${point.kinh_do}</p>
-                                                    <p>Vĩ độ: ${point.vi_do}</p>
-                                                    <p>Tỉnh: ${point.tinh}</p>
-                                                    <p>Huyện: ${point.huyen}</p>
-                                                    <p>Xã: ${point.xa}</p>
-                                                    <h6>Các ngày:</h6>
-                                                    <ul>
-                                                        ${point.cac_ngay.map(risk => `<li>Ngày: ${risk.ngay} - Nguy cơ: ${risk.nguy_co}</li>`).join('')}
-                                                    </ul>
-                                                </div>
-                                            `).join('')}
+                    data.forEach(record => {
+                        let recordElement = document.createElement('div');
+                        recordElement.innerHTML = `
+                    <h4>Phiên cảnh báo: Giờ ${record.Gio} - Ngày ${record.Ngay} - Tháng ${record.Thang} - Năm ${record.Nam}</h4>
+                    ${record.Cac_diem.map(point => `
+                            <div>
+                                <h5>Tên điểm: ${point.ten_diem}</h5>
+                                <p>Vị trí: ${point.vi_tri}</p>
+                                <p>Kinh độ: ${point.kinh_do}</p>
+                                <p>Vĩ độ: ${point.vi_do}</p>
+                                <p>Tỉnh: ${point.tinh}</p>
+                                <p>Huyện: ${point.huyen}</p>
+                                <p>Xã: ${point.xa}</p>
+                                <p>Nguy cơ: ${point.nguy_co}</p>
+                            </div>
+                        `).join('')}
                 `;
-                        allSessionsContent.appendChild(sessionElement);
+                        allrecordsContent.appendChild(recordElement);
                     });
 
                     document.getElementById('my_modal_full').showModal();
@@ -219,17 +216,18 @@
                 .catch(error => console.error('Error:', error));
         }
 
+
         function toggleAllView() {
-            let allSessionsContent = document.getElementById('all-sessions-content');
+            let allrecordsContent = document.getElementById('all-records-content');
             let toggleButton = document.getElementById('toggle-all-view');
             let textarea = document.getElementById('json-textarea');
             if (toggleButton.innerText === 'Xem JSON') {
-                textarea.value = JSON.stringify(allSessionsData, null, 2);
-                allSessionsContent.innerHTML = '<pre>' + textarea.value + '</pre>';
+                textarea.value = JSON.stringify(allrecordsData, null, 2);
+                allrecordsContent.innerHTML = '<pre>' + textarea.value + '</pre>';
                 textarea.style.display = 'block';
                 toggleButton.innerText = 'Xem bình thường';
             } else {
-                getAllSessions();
+                getAllRecords();
                 textarea.style.display = 'none';
                 toggleButton.innerText = 'Xem JSON';
             }
