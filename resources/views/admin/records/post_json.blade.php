@@ -29,27 +29,57 @@
 </dialog>
 
 <script>
-    // Form validation and error handling for JSON upload
-    document.getElementById('post-json-form').addEventListener('submit', function(event) {
-        const form = event.target;
-        const isValid = form.checkValidity();
+    document.getElementById('post-json-form').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Ngăn không gửi form theo cách mặc định
 
-        if (!isValid) {
-            event.preventDefault(); // Ngăn không cho gửi form nếu có lỗi
-            showValidationErrors(form);
+        const form = event.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                        'content')
+                }
+            });
+
+            // Đọc phản hồi JSON
+            const result = await response.json();
+
+            if (response.ok) {
+                alert(result.success);
+                window.location.href = result.redirectUrl; // Chuyển hướng đến trang chỉ định
+            } else {
+                // Hiển thị thông báo lỗi nếu có
+                showValidationErrors(result.errors || {
+                    error: result.error
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Đã xảy ra lỗi khi gửi dữ liệu.');
         }
     });
 
-    function showValidationErrors(form) {
+    function showValidationErrors(errors) {
         const errorDiv = document.getElementById('form-error-json');
         errorDiv.innerHTML = '';
 
-        const inputs = form.querySelectorAll('input:invalid');
-        inputs.forEach(input => {
+        if (errors) {
+            Object.keys(errors).forEach(field => {
+                const errorMessage = document.createElement('div');
+                errorMessage.classList.add('text-red-500', 'mt-2');
+                errorMessage.textContent = errors[field].join(', ');
+                errorDiv.appendChild(errorMessage);
+            });
+        } else {
             const errorMessage = document.createElement('div');
             errorMessage.classList.add('text-red-500', 'mt-2');
-            errorMessage.textContent = input.validationMessage;
+            errorMessage.textContent = 'Đã xảy ra lỗi không xác định.';
             errorDiv.appendChild(errorMessage);
-        });
+        }
     }
 </script>

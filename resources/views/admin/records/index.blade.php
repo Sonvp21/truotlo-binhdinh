@@ -7,7 +7,34 @@
                         Danh sách cảnh báo theo giờ
                     </span>
                 </div>
-                <x-admin.alerts.success />
+                @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-error">
+                    {{ session('error') }}
+                </div>
+            @endif
+            <style>
+                .alert-success {
+                    background-color: #d4edda;
+                    color: #155724;
+                    padding: 10px;
+                    border-radius: 5px;
+                    margin-bottom: 15px;
+                }
+                
+                .alert-error {
+                    background-color: #f8d7da;
+                    color: #721c24;
+                    padding: 10px;
+                    border-radius: 5px;
+                    margin-bottom: 15px;
+                }
+                </style>
                 <div class="mt-6">
                     <div class="grid-cols-3 gap-4 pb-3 flex">
                         <div

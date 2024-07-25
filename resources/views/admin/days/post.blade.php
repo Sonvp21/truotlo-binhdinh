@@ -25,13 +25,15 @@
                 <!-- Năm -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
                     <p>Năm</p>
-                    <input type="number" id="nam" name="Nam" required min="1900" max="2100" class="grow" placeholder="Nhập năm">
+                    <input type="number" id="nam" name="Nam" required min="1900" max="2100"
+                        class="grow" placeholder="Nhập năm">
                 </label>
 
                 <!-- Tháng -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
                     <p>Tháng</p>
-                    <input type="number" id="thang" name="Thang" required min="1" max="12" class="grow" placeholder="Nhập tháng">
+                    <input type="number" id="thang" name="Thang" required min="1" max="12"
+                        class="grow" placeholder="Nhập tháng">
                 </label>
 
                 <div id="points-container">
@@ -108,41 +110,67 @@
         const dayCount = daysContainer.querySelectorAll('.day-entry').length;
 
         const dayDiv = document.createElement('div');
-        dayDiv.classList.add('day-entry', 'mb-2');
+        dayDiv.classList.add('day-entry', 'mb-2', 'p-2', 'border', 'border-gray-300', 'rounded');
+        dayDiv.style.marginLeft = '20px';
         dayDiv.innerHTML = `
-        <div style="margin-left: 20px; margin-top:20px">
             <label class="input input-bordered flex items-center gap-2 mb-2">
                 <p>Ngày</p>
-                <input type="number" name="Cac_diem[${pointDiv.querySelector('[name^="Cac_diem"]').name.match(/\[(\d+)\]/)[1]}][cac_ngay][${dayCount}][ngay]" required class="grow" placeholder="Nhập ngày" min="1" max="31">
+                <input type="number" name="${daysContainerId.replace('days-container-', 'Cac_diem[')}][cac_ngay][${dayCount}][ngay]" required class="grow" placeholder="Nhập ngày" min="1" max="31">
             </label>
             <label class="input input-bordered flex items-center gap-2 mb-2">
                 <p>Nguy Cơ</p>
-                <input type="text" name="Cac_diem[${pointDiv.querySelector('[name^="Cac_diem"]').name.match(/\[(\d+)\]/)[1]}][cac_ngay][${dayCount}][nguy_co]" required class="grow" placeholder="Nhập nguy cơ">
-            </label></div>
+                <input type="text" name="${daysContainerId.replace('days-container-', 'Cac_diem[')}][cac_ngay][${dayCount}][nguy_co]" required class="grow" placeholder="Nhập nguy cơ">
+            </label>
         `;
         daysContainer.appendChild(dayDiv);
     }
 
-    // Form validation and error handling
-    document.getElementById('post-session-form').addEventListener('submit', function(event) {
-        const form = event.target;
-        const isValid = form.checkValidity();
+    // Function to handle form submission
+    document.getElementById('post-session-form').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Ngăn không gửi form theo cách mặc định
 
-        if (!isValid) {
-            event.preventDefault(); // Ngăn không cho gửi form nếu có lỗi
-            showValidationErrors(form);
+        const form = event.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                        'content')
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                console.log('Error Response JSON:', result);
+
+                if (response.status === 422) {
+                    showValidationErrors(result.errors);
+                } else {
+                    alert('Đã xảy ra lỗi.');
+                }
+            } else {
+                alert(result.success);
+                window.location.href = result.redirectUrl;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Đã xảy ra lỗi khi gửi dữ liệu.');
         }
     });
 
-    function showValidationErrors(form) {
+    function showValidationErrors(errors) {
         const errorDiv = document.getElementById('form-error');
         errorDiv.innerHTML = '';
 
-        const inputs = form.querySelectorAll('input:invalid');
-        inputs.forEach(input => {
+        Object.keys(errors).forEach(field => {
             const errorMessage = document.createElement('div');
             errorMessage.classList.add('text-red-500', 'mt-2');
-            errorMessage.textContent = input.validationMessage;
+            errorMessage.textContent = errors[field].join(', ');
             errorDiv.appendChild(errorMessage);
         });
     }

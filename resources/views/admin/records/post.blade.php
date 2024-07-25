@@ -25,25 +25,29 @@
                 <!-- Năm -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
                     <p>Năm</p>
-                    <input type="number" id="nam" name="Nam" required min="1900" max="2100" class="grow" placeholder="Nhập năm">
+                    <input type="number" id="nam" name="Nam" required min="1900" max="2100"
+                        class="grow" placeholder="Nhập năm">
                 </label>
 
                 <!-- Tháng -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
                     <p>Tháng</p>
-                    <input type="number" id="thang" name="Thang" required min="1" max="12" class="grow" placeholder="Nhập tháng">
+                    <input type="number" id="thang" name="Thang" required min="1" max="12"
+                        class="grow" placeholder="Nhập tháng">
                 </label>
 
                 <!-- Ngày -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
                     <p>Ngày</p>
-                    <input type="number" id="ngay" name="Ngay" required min="1" max="31" class="grow" placeholder="Nhập ngày">
+                    <input type="number" id="ngay" name="Ngay" required min="1" max="31"
+                        class="grow" placeholder="Nhập ngày">
                 </label>
 
                 <!-- Giờ -->
                 <label class="input input-bordered flex items-center gap-2 mb-4">
                     <p>Giờ</p>
-                    <input type="number" id="gio" name="Gio" required min="0" max="23" class="grow" placeholder="Nhập giờ">
+                    <input type="number" id="gio" name="Gio" required min="0" max="23"
+                        class="grow" placeholder="Nhập giờ">
                 </label>
 
                 <div id="points-container">
@@ -103,26 +107,54 @@
     }
 
     // Form validation and error handling
-    document.getElementById('post-record-form').addEventListener('submit', function(event) {
-        const form = event.target;
-        const isValid = form.checkValidity();
+    document.getElementById('post-record-form').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Ngăn không gửi form theo cách mặc định
 
-        if (!isValid) {
-            event.preventDefault(); // Ngăn không cho gửi form nếu có lỗi
-            showValidationErrors(form);
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            console.log('Error Response JSON:', result);
+            if (response.status === 422 && result.errors) {
+                showValidationErrors(result.errors);
+            } else {
+                alert('Đã xảy ra lỗi khi gửi yêu cầu.');
+            }
+        } else {
+            alert(result.success);
+            window.location.href = result.redirectUrl; // Chuyển hướng sau khi gửi thành công
         }
-    });
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Đã xảy ra lỗi khi gửi yêu cầu.');
+    }
+});
 
-    function showValidationErrors(form) {
-        const errorDiv = document.getElementById('form-error');
-        errorDiv.innerHTML = '';
+function showValidationErrors(errors) {
+    const errorDiv = document.getElementById('form-error');
+    errorDiv.innerHTML = '';
 
-        const inputs = form.querySelectorAll('input:invalid');
-        inputs.forEach(input => {
+    if (errors) {
+        Object.keys(errors).forEach(field => {
             const errorMessage = document.createElement('div');
             errorMessage.classList.add('text-red-500', 'mt-2');
-            errorMessage.textContent = input.validationMessage;
+            errorMessage.textContent = `${field}: ${errors[field].join(', ')}`;
             errorDiv.appendChild(errorMessage);
         });
+    } else {
+        errorDiv.textContent = 'Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu.';
     }
+}
+
 </script>
