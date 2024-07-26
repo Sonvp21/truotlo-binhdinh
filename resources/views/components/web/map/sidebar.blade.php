@@ -1,5 +1,5 @@
 <div>
-    <div class="z-20 bg-white shadow-[6px_0_6px_-7px_#333]">
+    <div class="z-20 bg-white shadow-[6px_0_6px_-7px_#333]" style="    height: -webkit-fill-available;">
         <div x-cloak :class="sidebar || '-ml-80 hidden'"
             class="z-20 w-80 flex-none overflow-y-scroll overscroll-contain transition-all ease-in-out">
             <div class="flex h-16 items-center justify-between px-4">
