@@ -14,6 +14,7 @@ const API_URL = {
     border: APP_URL + "/ban-do/borders.geojson",
     communes: APP_URL + "/ban-do/communes.geojson",
     districts: APP_URL + "/ban-do/districts.geojson",
+    landslide: APP_URL + "/ban-do/landslide.geojson",
 };
 
 const LAYER_STYLE = {
@@ -68,6 +69,15 @@ const LAYER_STYLE = {
             }),
         });
     },
+
+    landslide: new Style({
+        image: new Icon({
+            anchor: [0.5, 0.96],
+            crossOrigin: "anonymous",
+            src: `${APP_URL}/files/images/map/landslide.png`,
+            scale: 0.07,
+        }),
+    }),
 };
 
 // this is only for small data ok
@@ -83,6 +93,11 @@ const LAYER_SOURCE = {
     communes: new VectorSource({
         format: new GeoJSON(),
         url: API_URL.communes,
+    }),
+
+    landslide: new VectorSource({
+        url: API_URL.landslide,
+        format: new GeoJSON(),
     }),
 };
 
@@ -107,12 +122,22 @@ export const ADMINISTRATIVE_LAYER = {
         source: LAYER_SOURCE.districts,
         style: LAYER_STYLE.districts,
     }),
+
+    landslide: new VectorLayer({
+        visible: true,
+        title: "landslide",
+        source: LAYER_SOURCE.landslide,
+        style: LAYER_STYLE.landslide,
+        declutter: true,
+    }),
 };
 
 export const ADMINISTRATIVE_UI = {
     border: document.getElementById("border-checkbox"),
     communes: document.getElementById("communes-checkbox"),
     districts: document.getElementById("districts-checkbox"),
+
+    landslide: document.getElementById("landslide-checkbox"),
 };
 
 ADMINISTRATIVE_UI.border.addEventListener("click", function () {
@@ -127,8 +152,11 @@ ADMINISTRATIVE_UI.districts.addEventListener("click", function () {
     ADMINISTRATIVE_LAYER.districts.setVisible(this.checked);
 });
 
+ADMINISTRATIVE_UI.landslide.addEventListener("click", function () {
+    ADMINISTRATIVE_LAYER.landslide.setVisible(this.checked);
+});
+
 export function ADMINISTRATIVE_INFOBOX(map) {
-    
     map.on("singleclick", function (event) {
         const features = map.getFeaturesAtPixel(event.pixel);
         // let prop = features[0].getProperties();
@@ -157,6 +185,12 @@ export function ADMINISTRATIVE_INFOBOX(map) {
         if (prop.layer === "xa") {
             Livewire.dispatchTo("website.map.info.xa", "getXaInfo", {
                 id: prop.id,
+            });
+        }
+
+        if (prop.layer === 'landslide') {
+            Livewire.dispatchTo('map.info.landslide', 'get-landslide-info', {
+                id: prop.id
             });
         }
     });

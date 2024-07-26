@@ -8,6 +8,7 @@
     <meta name="app-url" content="{{ url('/') }}" />
     <title>{{ config('app.name', 'Laravel') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/map/map.js'])
+    @livewireStyles
 </head>
 
 <body class="min-h-screen bg-gray-100 font-sans antialiased dark:bg-gray-900">
@@ -20,7 +21,8 @@
         </main>
     </div>
     <x-web.footer />
-
+    @livewireScripts
+    @stack('scripts')
 </body>
 
 </html>

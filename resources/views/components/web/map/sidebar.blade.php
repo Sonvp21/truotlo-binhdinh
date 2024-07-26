@@ -134,6 +134,7 @@
                                 </label>
                             </div>
                         </li>
+
                     </ul>
                 </div>
                 <div x-data="{ open: true }">
@@ -169,7 +170,7 @@
                         class="ml-6 space-y-2 border-l border-slate-300 border-l-slate-300 p-2">
                         <li>
                             <div class="flex items-start">
-                                <input id="landslide-checkbox" type="checkbox" name="landslide"
+                                <input id="landslide-checkbox" type="checkbox" name="landslide" value="l"
                                     class="landslide-slate-300 h-4 w-4 rounded bg-slate-200 text-blue-600 focus:ring-2 focus:ring-blue-500"
                                     checked />
                                 <label for="landslide-checkbox" class="ml-2 text-sm font-medium text-slate-900">

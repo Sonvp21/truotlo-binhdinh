@@ -32,6 +32,8 @@ const map = new Map({
 
         ADMINISTRATIVE_LAYER.districts,
         ADMINISTRATIVE_LAYER.communes,
+
+        ADMINISTRATIVE_LAYER.landslide,
     ],
     target: "map",
     view: VIEW,

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Landslide extends Model
 {
-    protected $table = 'map_landslides';
+    protected $table = 'landslide';
 
     public function commune(): BelongsTo
     {

@@ -1,4 +1,4 @@
-<div class="absolute bottom-5 right-5 z-10 hidden space-y-3 md:block">
+<div class="absolute bottom-6 right-8 z-10 hidden space-y-3 md:block">
     <div class="overflow-hidden shadow">
         <ul class="rounded border border-white bg-white/70 text-slate-500 shadow backdrop-blur-md">
             <li id="reset-center" class="cursor-pointer px-2 py-2 hover:text-lime-700" title="Return">

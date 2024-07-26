@@ -32,5 +32,7 @@ Route::get('/lien-he', [ContactController::class, 'index'])->name('contact');
 Route::get('/ban-do', [MapController::class, 'index'])->name('map');
 Route::get('/ban-do/{layer}.geojson', [MapController::class, 'layer']);
 
+Route::get('/map/landslide/info/{id}', [MapController::class, 'getLandslides'])->name('map.landslide.info');
+
 
 require __DIR__.'/admin.php';
