@@ -28,4 +28,9 @@ Route::get('/bieudo', [ChartController::class, 'index'])->name('chart');
 Route::get('/xuat-excel', [ChartController::class, 'xuatExcel'])->name('xuat.excel');
 Route::get('/lien-he', [ContactController::class, 'index'])->name('contact');
 
+//map
+Route::get('/ban-do', [MapController::class, 'index'])->name('map');
+Route::get('/ban-do/{layer}.geojson', [MapController::class, 'layer']);
+
+
 require __DIR__.'/admin.php';

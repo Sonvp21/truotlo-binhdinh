@@ -1,4 +1,4 @@
-<x-web-layout>
+<x-map-layout>
 <div>
     <div x-data="{ sidebar: true }" class="flex h-[calc(100vh_-_48px)] select-none bg-[#eeefff]  bg-checkered-pattern">
         <x-web.map.sidebar />
@@ -6,4 +6,4 @@
     </div>
     <x-web.map.info.landslide />
 </div>
-</x-web-layout>
+</x-map-layout>

@@ -30,8 +30,6 @@ Route::middleware('auth')->group(function () {
         // Route::resource('categories', CategoryController::class);
     });
 });
-
-
 // API
 
 Route::get('/sessions', [ForecastSessionController::class, 'indexView'])->name('admin.sessions.index');

@@ -30,14 +30,14 @@ class WeatherForecast extends Component
                 ->get()
         );
 
-        $this->commune = Cache::rememberForever(
-            'communes-'.$this->commune_id,
-            fn () => Commune::query()
-                ->with('district')
-                ->select('name', 'district_id', 'lat', 'lon')
-                ->where('id', $this->commune_id)
-                ->first()
-        );
+        // $this->commune = Cache::rememberForever(
+        //     'communes-'.$this->commune_id,
+        //     fn () => Commune::query()
+        //         ->with('district')
+        //         ->select('name', 'district_id', 'lat', 'lon')
+        //         ->where('id', $this->commune_id)
+        //         ->first()
+        // );
 
         $this->districts = Cache::rememberForever('districts', function () {
             return District::all();
@@ -68,12 +68,12 @@ class WeatherForecast extends Component
         $weatherForecastService = app(WeatherForecastService::class);
 
         return view('components.web.aside.weather-forecast', [
-            'currentForecast' => cache()->remember('sidebar-current-'.$this->commune->id, 900, function () use ($weatherForecastService) {
-                return $weatherForecastService->getCurrent($this->commune->only('lat', 'lon'));
-            }),
-            'dailyForecast' => cache()->remember('sidebar-daily-'.$this->commune->id, 900, function () use ($weatherForecastService) {
-                return $weatherForecastService->getDaily($this->commune->only('lat', 'lon'));
-            }),
+            // 'currentForecast' => cache()->remember('sidebar-current-'.$this->commune->id, 900, function () use ($weatherForecastService) {
+            //     return $weatherForecastService->getCurrent($this->commune->only('lat', 'lon'));
+            // }),
+            // 'dailyForecast' => cache()->remember('sidebar-daily-'.$this->commune->id, 900, function () use ($weatherForecastService) {
+            //     return $weatherForecastService->getDaily($this->commune->only('lat', 'lon'));
+            // }),
         ]);
     }
 }

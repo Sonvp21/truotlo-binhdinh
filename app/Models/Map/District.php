@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class District extends Model
 {
-    protected $table = 'map_districts';
+    protected $table = 'districts';
 }

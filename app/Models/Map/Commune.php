@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Commune extends Model
 {
-    protected $table = 'map_communes';
+    protected $table = 'xa';
 
     public function district(): BelongsTo
     {

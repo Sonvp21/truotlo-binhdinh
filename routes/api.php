@@ -24,11 +24,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/map/layers/communes', CommuneLayerController::class);
-Route::get('/map/layers/districts', DistrictLayerController::class);
-Route::get('/map/layers/borders', BorderLayerController::class);
-Route::get('/map/layers/landslides', LandslideLayerController::class);
-
 Route::apiResource('binhdinh/du_bao_5_ngay', ForecastSessionController::class);
 //post file json
 Route::post('binhdinh/du_bao_5_ngay/json', [ForecastSessionController::class, 'storeFromJson']);
