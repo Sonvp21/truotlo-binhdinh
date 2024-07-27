@@ -1,6 +1,6 @@
 <div>
     <ul class="hidden space-y-1 rounded text-white p-4 text-sm lg:block relative bg-cover bg-center"
-        style="background-image: url('{{ asset('giao_dien/footer.png') }}'); width: 210px; height: 150px;">
+        style="background-image: url('{{ asset('giao_dien/footer.png') }}'); width: 220px; height: 150px;">
         <!-- White overlay with adjusted opacity -->
         <div class="absolute inset-0 bg-white opacity-60 rounded"></div>
         <div class="relative z-10 text-black" > <!-- Ensure text is on top of the overlay -->

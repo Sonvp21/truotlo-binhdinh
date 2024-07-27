@@ -4,9 +4,6 @@
             <div class="flex w-full items-center justify-between">
                 <ul>
                     <li class="font-bold m-2">SẢN PHẨM ĐỀ TÀI NCKH NĂM 2024</li>
-                    <li class="font-bold m-2">Chủ nhiệm đề tài: ThS. Nguyễn Kim Long</li>
-                    <li class="font-bold m-2">Tổ chức chủ trì đề tài: Viện Địa công nghệ và Môi trường</li>
-                    <li class="font-bold m-2">Website: http://iegvn.com - Điện thoại: 0242. 2018521</li>
                 </ul>
                 <x-web.counter />
             </div>
