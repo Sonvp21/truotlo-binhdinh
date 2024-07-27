@@ -187,7 +187,7 @@
                                     @php
                                         $districts = $landslides->pluck('district')->filter()->unique('id');
                                     @endphp
-                                    <option value="">Tất cả</option>
+                                    <option value="0">Tất cả</option>
                                     @foreach ($districts as $district)
                                         <option value="{{ $district->id }}">{{ $district->ten_huyen }}</option>
                                     @endforeach

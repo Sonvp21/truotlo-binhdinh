@@ -110,44 +110,53 @@ class MapController extends Controller
 
         if ($layer === 'landslide') {
             $districtId = $request->input('district_id');
-        
-            $geoJson = Cache::rememberForever('landslide' . ($districtId ? "_$districtId" : ""), function () use ($districtId) {
-                $query = DB::table(DB::raw("(SELECT
-                    'FeatureCollection' AS type,
-                    array_to_json(array_agg(f)) AS features
-                FROM (
+
+            $geoJson = DB::table(DB::raw("(SELECT
+    'FeatureCollection' AS TYPE,
+    array_to_json(array_agg(f)) AS features
+FROM (
+    SELECT
+        'Feature' AS TYPE,
+        ST_AsGeoJSON(l.geom)::json AS geometry,
+        row_to_json((
+            SELECT
+                p FROM (
                     SELECT
-                        'Feature' AS type,
-                        ST_AsGeoJSON(l.geom)::json AS geometry,
-                        row_to_json((
-                            SELECT p FROM (
-                                SELECT l.id, 
-                                       l.commune_id, 
-                                       l.ten_xa AS ten_xa, 
-                                       l.vi_tri AS vi_tri, 
-                                       l.mo_ta AS mo_ta, 
-                                       l.object_id AS object_id,
-                                       'landslide' AS layer
-                            ) AS p
-                        )) AS properties
-                    FROM landslide l
-                    " . ($districtId ? "JOIN xa c ON l.commune_id = c.id WHERE c.district_id = ?" : "") . "
-                    GROUP BY l.id
-                ) AS f
-            ) AS fc"))
-                    ->when($districtId, function ($query, $districtId) {
-                        $query->setBindings([$districtId]);
-                    });
-        
-                return $query->first();
-            });
-    
-            // Đảm bảo $geoJson không phải là chuỗi và ở định dạng mong đợi
+                        l.id, 
+                        l.commune_id, 
+                        l.ten_xa AS ten_xa, 
+                        l.vi_tri AS vi_tri, 
+                        l.mo_ta AS mo_ta, 
+                        l.object_id AS object_id,
+                        'landslide' AS layer
+                ) AS p
+        )) AS properties
+    FROM
+        landslide l
+        " . ($districtId ? "JOIN xa c ON l.commune_id = c.id WHERE c.district_id = ?" : "") . "
+    GROUP BY
+        l.id
+) AS f
+) AS fc"))
+                ->when($districtId, function ($query, $districtId) {
+                    $query->setBindings([$districtId]);
+                })
+                ->first();
+
+            return json_decode($geoJson->features ?? '[]');
+
+
+            // Nếu là chuỗi, phân tích nó
             if (is_string($geoJson)) {
                 $geoJson = json_decode($geoJson);
             }
-    
-            return response()->json($geoJson);
+
+            // Đảm bảo dữ liệu là hợp lệ
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception("Invalid GeoJSON returned from database");
+            }
+
+            return $geoJson;
         }
     }
 }

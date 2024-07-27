@@ -156,6 +156,14 @@ ADMINISTRATIVE_UI.landslide.addEventListener("click", function () {
     ADMINISTRATIVE_LAYER.landslide.setVisible(this.checked);
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const districtSelect = document.getElementById("districtSelect");
+    if (districtSelect) {
+        // Kích hoạt sự kiện change của districtSelect ngay khi trang được tải
+        districtSelect.dispatchEvent(new Event("change"));
+    }
+});
+
 document.getElementById("districtSelect").addEventListener("change", function () {
     const districtId = this.value;
     const url = districtId 
@@ -165,40 +173,53 @@ document.getElementById("districtSelect").addEventListener("change", function ()
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            // In dữ liệu ra console để kiểm tra
-            console.log("Received GeoJSON:", data);
+            console.log("Received GeoJSON data:", data); // Kiểm tra dữ liệu nhận được
 
-            // Kiểm tra và xử lý dữ liệu GeoJSON
-            if (typeof data.features === "string") {
-                try {
-                    data.features = JSON.parse(data.features);
-                } catch (error) {
-                    throw new Error("Failed to parse features JSON string");
+            try {
+                // Nếu dữ liệu trả về là một mảng, bọc nó vào một đối tượng FeatureCollection
+                if (Array.isArray(data)) {
+                    data = {
+                        type: "FeatureCollection",
+                        features: data
+                    };
                 }
-            }
 
-            // Kiểm tra cấu trúc GeoJSON
-            if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
-                throw new Error("Invalid GeoJSON structure");
-            }
-
-            // Kiểm tra loại hình GeoJSON
-            data.features.forEach(feature => {
-                if (!feature.geometry || !["Point", "Polygon", "LineString", "MultiPoint"].includes(feature.geometry.type)) {
-                    throw new Error("Unsupported GeoJSON geometry type");
+                // Kiểm tra và xử lý dữ liệu
+                if (typeof data.features === "string") {
+                    try {
+                        data.features = JSON.parse(data.features);
+                    } catch (error) {
+                        console.error("Failed to parse features JSON string:", error);
+                        throw new Error("Failed to parse features JSON string");
+                    }
                 }
-            });
 
-            // Cập nhật dữ liệu cho nguồn VectorSource
-            const landslideSource = new VectorSource({
-                features: new GeoJSON().readFeatures(data),
-            });
+                if (data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
+                    console.error("Invalid GeoJSON structure:", data);
+                    throw new Error("Invalid GeoJSON structure");
+                }
 
-            ADMINISTRATIVE_LAYER.landslide.setSource(landslideSource);
+                // Kiểm tra và lọc dữ liệu
+                const filteredFeatures = data.features.filter(feature => {
+                    return feature.geometry && ["Point", "Polygon", "LineString", "MultiPoint"].includes(feature.geometry.type);
+                });
+
+                // Tạo nguồn dữ liệu cho layer
+                const landslideSource = new VectorSource({
+                    features: new GeoJSON().readFeatures({
+                        type: "FeatureCollection",
+                        features: filteredFeatures
+                    }),
+                });
+
+                // Cập nhật layer với nguồn dữ liệu mới
+                ADMINISTRATIVE_LAYER.landslide.setSource(landslideSource);
+            } catch (error) {
+                console.error('Error processing GeoJSON:', error);
+            }
         })
         .catch(error => console.error('Error fetching GeoJSON:', error));
 });
-
 
 export function ADMINISTRATIVE_INFOBOX(map) {
     map.on("singleclick", function (event) {
