@@ -156,6 +156,50 @@ ADMINISTRATIVE_UI.landslide.addEventListener("click", function () {
     ADMINISTRATIVE_LAYER.landslide.setVisible(this.checked);
 });
 
+document.getElementById("districtSelect").addEventListener("change", function () {
+    const districtId = this.value;
+    const url = districtId 
+        ? `${APP_URL}/ban-do/landslide.geojson?district_id=${districtId}`
+        : `${APP_URL}/ban-do/landslide.geojson`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // In dữ liệu ra console để kiểm tra
+            console.log("Received GeoJSON:", data);
+
+            // Kiểm tra và xử lý dữ liệu GeoJSON
+            if (typeof data.features === "string") {
+                try {
+                    data.features = JSON.parse(data.features);
+                } catch (error) {
+                    throw new Error("Failed to parse features JSON string");
+                }
+            }
+
+            // Kiểm tra cấu trúc GeoJSON
+            if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
+                throw new Error("Invalid GeoJSON structure");
+            }
+
+            // Kiểm tra loại hình GeoJSON
+            data.features.forEach(feature => {
+                if (!feature.geometry || !["Point", "Polygon", "LineString", "MultiPoint"].includes(feature.geometry.type)) {
+                    throw new Error("Unsupported GeoJSON geometry type");
+                }
+            });
+
+            // Cập nhật dữ liệu cho nguồn VectorSource
+            const landslideSource = new VectorSource({
+                features: new GeoJSON().readFeatures(data),
+            });
+
+            ADMINISTRATIVE_LAYER.landslide.setSource(landslideSource);
+        })
+        .catch(error => console.error('Error fetching GeoJSON:', error));
+});
+
+
 export function ADMINISTRATIVE_INFOBOX(map) {
     map.on("singleclick", function (event) {
         const features = map.getFeaturesAtPixel(event.pixel);

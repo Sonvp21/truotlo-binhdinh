@@ -1,5 +1,5 @@
 <div>
-    <div class="z-20 bg-white shadow-[6px_0_6px_-7px_#333]">
+    <div class="z-20 bg-white shadow-[6px_0_6px_-7px_#333]" style="    height: -webkit-fill-available;">
         <div x-cloak :class="sidebar || '-ml-80 hidden'"
             class="z-20 w-80 flex-none overflow-y-scroll overscroll-contain transition-all ease-in-out">
             <div class="flex h-16 items-center justify-between px-4">
@@ -178,7 +178,26 @@
                                 </label>
                             </div>
                         </li>
+                        <li>
+                            <div class="flex items-start">
+                                <label for="districtSelect" class="ml-2 text-sm font-medium text-slate-900">
+                                    Chọn Huyện
+                                </label>
+                                <select id="districtSelect" class="ml-2 rounded border border-slate-300 px-2 text-sm">
+                                    @php
+                                        $districts = $landslides->pluck('district')->filter()->unique('id');
+                                    @endphp
+                                    <option value="">Tất cả</option>
+                                    @foreach ($districts as $district)
+                                        <option value="{{ $district->id }}">{{ $district->ten_huyen }}</option>
+                                    @endforeach
+
+                                </select>
+                            </div>
+                        </li>
                     </ul>
+
+
                 </div>
             </div>
         </div>

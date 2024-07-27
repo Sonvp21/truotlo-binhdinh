@@ -8,12 +8,17 @@ use Illuminate\View\Component;
 
 class Sidebar extends Component
 {
+    public $landslides;
+
     /**
      * Create a new component instance.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection  $landslides
+     * @return void
      */
-    public function __construct()
+    public function __construct($landslides)
     {
-        //
+        $this->landslides = $landslides;
     }
 
     /**
