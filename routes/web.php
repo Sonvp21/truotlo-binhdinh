@@ -22,7 +22,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/gioi-thieu', [AboutController::class, 'index'])->name('about');
-Route::get('/thong-tin-tuot-lo', [FlashReportController::class, 'index'])->name('flash-report');
+Route::get('/thong-tin-ngay', [FlashReportController::class, 'indexDay'])->name('day-report');
+Route::get('/thong-tin-gio', [FlashReportController::class, 'indexRecord'])->name('record-report');
 Route::get('/bando-gis', [MapController::class, 'index'])->name('map');
 Route::get('/bieudo', [ChartController::class, 'index'])->name('chart');
 Route::get('/xuat-excel', [ChartController::class, 'xuatExcel'])->name('xuat.excel');

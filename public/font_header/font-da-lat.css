@@ -1,0 +1,17 @@
+@font-face {
+    font-family: 'UVN Da Lat';
+    src: url('/font_header/unicode.display.UVNDaLat_R.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.font-uvn-da-lat {
+    font-family: 'UVN Da Lat', sans-serif;
+    color: red;
+    text-shadow: 
+        -1px -1px 0 #fff,  
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        1px 1px 0 #fff;
+    font-weight: bold;
+}

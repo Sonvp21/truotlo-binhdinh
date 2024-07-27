@@ -1,6 +1,6 @@
 <x-web-layout>
 <div>
-    <h2 class="text-3xl font-extrabold">THÔNG TIN DỰ BÁO TRƯỢT LỞ</h2>
+    <h2 class="text-3xl font-extrabold">THÔNG TIN DỰ BÁO TRƯỢT LỞ THEO NGÀY</h2>
     <div class="mt-4">
         <p class="font-bold text-sky-700">Thời gian: 14:32 ngày 30/03/2024</p>
         <p class="text-slate-600">

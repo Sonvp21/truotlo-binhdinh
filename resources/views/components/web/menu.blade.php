@@ -4,7 +4,7 @@
             <span x-show="!open">{{ svg('heroicon-o-bars-3', 'size-8') }}</span>
             <span x-cloak x-show="open">{{ svg('heroicon-o-x-mark', 'size-8') }}</span>
         </div>
-        <ul :class="{ 'block': open, 'hidden': !open }"
+        <ul :class="{ 'block': open, 'hidden': !open }" style="color: white"
             class="relative mx-auto hidden h-auto max-w-7xl flex-col px-4 text-sm font-bold uppercase sm:px-6 md:flex md:h-12 md:flex-row md:items-center lg:px-8">
             <li class="h-full">
                 <a class="flex h-full items-center px-4 py-3 hover:bg-sky-700 hover:text-white" wire:navigate
@@ -16,7 +16,11 @@
             </li>
             <li class="h-full">
                 <a class="flex h-full items-center px-4 py-3 hover:bg-sky-700 hover:text-white" wire:navigate
-                    href="/thong-tin-tuot-lo">THÔNG TIN TRƯỢT LỞ</a>
+                    href="/thong-tin-ngay">THÔNG TIN NGÀY</a>
+            </li>
+            <li class="h-full">
+                <a class="flex h-full items-center px-4 py-3 hover:bg-sky-700 hover:text-white" wire:navigate
+                    href="/thong-tin-gio">THÔNG TIN GIỜ</a>
             </li>
             <li class="h-full">
                 <a class="flex h-full items-center px-4 py-3 hover:bg-sky-700 hover:text-white" href="/bando-gis">BẢN ĐỒ
