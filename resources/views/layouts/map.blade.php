@@ -15,7 +15,6 @@
     <x-web.header />
     <x-web.menu />
     <div class="relative mx-auto mt-4 flex h-full max-w-7xl flex-col gap-8 px-4 sm:px-6 md:flex-row lg:px-8">
-            <x-web.aside />
         <main class="h-full w-full">
             {{ $slot }}
         </main>

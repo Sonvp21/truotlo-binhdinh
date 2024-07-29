@@ -1,6 +1,6 @@
 <x-web-layout>
     <div>
-        acsacasc
+        Nội dung home
     </div>
 
 </x-web-layout>

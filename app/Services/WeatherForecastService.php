@@ -10,52 +10,75 @@ use Illuminate\Support\Facades\Http;
 
 class WeatherForecastService
 {
-    public function getCurrent($coordinates): Collection|WeatherForecastDTO
+    public function getCurrent(array $coordinates): ?WeatherForecastDTO
     {
-        return $this->getWeather($coordinates, OpenWeatherMapEndpointEnum::WEATHER);
+        $endpoint = OpenWeatherMapEndpointEnum::WEATHER->value;
+        return $this->getWeather($coordinates, $endpoint);
     }
 
-    public function getDaily($coordinates): Collection|WeatherForecastDTO
+    public function getDaily(array $coordinates): ?Collection
     {
-        return $this->getWeather($coordinates, OpenWeatherMapEndpointEnum::FORECAST);
-    }
-
-    protected function getWeather($coordinates, $endpoint, ...$args): Collection|WeatherForecastDTO
-    {
-        $response = Http::retry(3, 100)->get(config('services.openweathermap.base_url').$endpoint->value, [
+        $endpoint = '/forecast';
+        $response = Http::retry(3, 100)->get(config('services.openweathermap.base_url') . $endpoint, [
             'lat' => $coordinates['lat'],
             'lon' => $coordinates['lon'],
-            'units' => isset($args['lang']) ? $args['lang'] : 'metric',
-            'lang' => isset($args['lang']) ? $args['lang'] : 'vi',
+            'units' => 'metric',
+            'lang' => 'vi',
             'appid' => config('services.openweathermap.api_key'),
         ]);
 
-        if ($response->collect()->has('list')) {
-            return $response->collect()['list'] = collect($response->collect()['list'])->map(function ($item) {
-                return $this->getWeatherRequestDTO($item);
+        if ($response->successful()) {
+            $dailyData = collect($response->json()['list']);
+
+            // Chỉ giữ lại dữ liệu của mỗi ngày một lần
+            $groupedByDate = $dailyData->groupBy(function ($item) {
+                return Carbon::createFromTimestamp($item['dt'])->format('Y-m-d');
+            })->map(function ($items) {
+                return $this->getDailyWeatherRequestDTO($items->first());
             });
+
+            return $groupedByDate;
         }
 
-        return $this->getWeatherRequestDTO($response->collect());
+        return null;
     }
 
-    protected function getWeatherRequestDTO($response): WeatherForecastDTO
+    protected function getWeather(array $coordinates, string $endpoint): ?WeatherForecastDTO
     {
-        $weatherDto = new WeatherForecastDTO();
-        $weatherDto->icon_code = asset('files/images/openweathermap/clouds/'.$response['weather'][0]['icon'].'.svg');
-        $weatherDto->low_temp = $response['main']['temp_min'];
-        $weatherDto->high_temp = $response['main']['temp_max'];
-        $weatherDto->precip = isset($response['rain']) && isset($response['rain']['1h']) ? $response['rain']['1h'] : 0;
-        $weatherDto->phrase = $response['weather'][0]['description'];
-        $weatherDto->temp = $response['main']['temp'];
-        $weatherDto->obs_time = Carbon::createFromTimestamp($response['dt']);
-        $weatherDto->humidity = $response['main']['humidity'];
-        $weatherDto->wind_speed = $response['wind']['speed'];
-        $weatherDto->wind_dir = $response['wind']['deg'];
-        $weatherDto->precip_3hr = isset($response['rain']) && isset($response['rain']['3h']) ? $response['rain']['3h'] : 0;
-        $weatherDto->sunrise = isset($response['sys']['sunrise']) ? Carbon::createFromTimestamp($response['sys']['sunrise']) : null;
-        $weatherDto->sunset = isset($response['sys']['sunset']) ? Carbon::createFromTimestamp($response['sys']['sunset']) : null;
+        $response = Http::retry(3, 100)->get(config('services.openweathermap.base_url') . $endpoint, [
+            'lat' => $coordinates['lat'],
+            'lon' => $coordinates['lon'],
+            'units' => 'metric',
+            'lang' => 'vi',
+            'appid' => config('services.openweathermap.api_key'),
+        ]);
 
-        return $weatherDto;
+        if ($response->successful()) {
+            $data = $response->json();
+
+            return isset($data['weather']) 
+                ? $this->getDailyWeatherRequestDTO($data)
+                : null;
+        }
+
+        return null;
+    }
+
+    protected function getDailyWeatherRequestDTO(array $item): WeatherForecastDTO
+    {
+        return new WeatherForecastDTO(
+            asset('files/images/openweathermap/clouds/'.$item['weather'][0]['icon'].'.svg'),
+            $item['main']['temp_min'],
+            $item['main']['temp_max'],
+            $item['weather'][0]['description'],
+            $item['main']['temp'],
+            Carbon::createFromTimestamp($item['dt']),
+            $item['main']['humidity'],
+            $item['wind']['speed'],
+            $item['wind']['deg'],
+            isset($item['rain']) && isset($item['rain']['3h']) ? $item['rain']['3h'] : 0,
+            isset($item['sys']['sunrise']) ? Carbon::createFromTimestamp($item['sys']['sunrise']) : null,
+            isset($item['sys']['sunset']) ? Carbon::createFromTimestamp($item['sys']['sunset']) : null
+        );
     }
 }

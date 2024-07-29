@@ -1,7 +1,7 @@
 <div class="flex-none space-y-2 px-2 text-center text-sm text-gray-700">
     <div class="flex flex-col">
         <span class="font-bold">{{ $forecast->obs_time->translatedFormat('D') }}</span>
-        <span class="text-xs">{{ $forecast->obs_time->translatedFormat('H') }}</span>
+        {{-- <span class="text-xs">{{ $forecast->obs_time->translatedFormat('H') }}</span> --}}
     </div>
     <div>
         <img

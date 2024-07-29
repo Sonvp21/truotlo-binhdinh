@@ -1,74 +1,48 @@
 <?php
-
 namespace App\DTOs;
 
 use Carbon\Carbon;
 
 class WeatherForecastDTO
 {
-    /*
-    * Weather icon code
-    */
     public string $icon_code;
-
-    /*
-    * Low temperature
-    */
-
     public float $low_temp;
-
-    /*
-    * High temperature
-    */
     public float $high_temp;
-
-    /*
-    * Precipitation
-    */
-    public float $precip;
-
-    /*
-    * Weather description
-    */
     public string $phrase;
-
-    /*
-    * Observed time
-    */
-    public Carbon $obs_time;
-
-    /*
-    * Temperature
-    */
     public float $temp;
-
-    /*
-    * Humidity
-    */
+    public Carbon $obs_time;
     public int $humidity;
-
-    /*
-    * Wind speed
-    */
     public float $wind_speed;
-
-    /*
-    * Wind direction
-    */
     public int $wind_dir;
-
-    /*
-    * 3hr precipitation
-    */
-    public ?float $precip_3hr;
-
-    /*
-    * Sunrise
-    */
+    public float $precip_3hr;
     public ?Carbon $sunrise;
-
-    /*
-    * Sunset
-    */
     public ?Carbon $sunset;
+
+    public function __construct(
+        string $icon_code = '',
+        float $low_temp = 0,
+        float $high_temp = 0,
+        string $phrase = '',
+        float $temp = 0,
+        Carbon $obs_time = null,
+        int $humidity = 0,
+        float $wind_speed = 0,
+        int $wind_dir = 0,
+        float $precip_3hr = 0,
+        ?Carbon $sunrise = null,
+        ?Carbon $sunset = null
+    ) {
+        $this->icon_code = $icon_code;
+        $this->low_temp = $low_temp;
+        $this->high_temp = $high_temp;
+        $this->phrase = $phrase;
+        $this->temp = $temp;
+        $this->obs_time = $obs_time;
+        $this->humidity = $humidity;
+        $this->wind_speed = $wind_speed;
+        $this->wind_dir = $wind_dir;
+        $this->precip_3hr = $precip_3hr;
+        $this->sunrise = $sunrise;
+        $this->sunset = $sunset;
+    }
 }

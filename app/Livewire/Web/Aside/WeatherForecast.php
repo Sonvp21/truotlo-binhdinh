@@ -12,65 +12,83 @@ use Livewire\Component;
 
 class WeatherForecast extends Component
 {
-    public int $commune_id = 92;
+    public ?int $commune_id = 92;
     public int $district_id = 7;
-    public Commune $commune;
+    public ?Commune $commune = null;
     public Collection $communes;
     public Collection $districts;
 
     public function mount(): void
     {
-        $this->communes = Cache::rememberForever(
-            'livewire.commune-daily-' . $this->district_id,
-            fn () => Commune::query()
-                ->with('district')
-                ->select('id', 'ten_xa')
-                ->where('district_id', $this->district_id)
-                ->get()
-        );
-
-        $this->commune = Cache::rememberForever(
-            'livewire.communes-' . $this->commune_id,
-            fn () => Commune::query()
-                ->with('district')
-                ->select('ten_xa', 'district_id', 'lat', 'lon')
-                ->where('id', $this->commune_id)
-                ->first()
-        );
-
-        $this->districts = Cache::rememberForever('livewire.districts', function () {
-            return District::all();
-        });
-
-        // Debugging
-        logger()->info('Communes:', $this->communes->toArray());
-        logger()->info('Commune:', $this->commune->toArray());
-        logger()->info('Districts:', $this->districts->toArray());
+        $this->loadDistricts();
+        $this->loadCommunes();
+        $this->loadCommune();
     }
 
     public function updatedDistrictId($id): void
     {
-        $this->communes = Commune::query()
-            ->where('district_id', $id)
-            ->get();
-        $this->commune = $this->communes->first();
-        $this->commune_id = $this->commune->id;
+        $this->commune_id = null; // Reset commune_id khi district_id thay đổi
+        $this->loadCommunes();
     }
 
     public function updatedCommuneId($id): void
     {
-        $this->commune = Commune::find($id);
+        $this->loadCommune();
+    }
+
+    protected function loadDistricts(): void
+    {
+        $this->districts = Cache::rememberForever('livewire.districts', function () {
+            return District::all();
+        });
+    }
+
+    protected function loadCommunes(): void
+    {
+        $this->communes = Commune::query()
+            ->where('district_id', $this->district_id)
+            ->select('id', 'ten_xa')
+            ->get();
+
+        if ($this->communes->isNotEmpty()) {
+            // Cập nhật commune_id nếu cần
+            if (is_null($this->commune_id) || !$this->communes->contains('id', $this->commune_id)) {
+                $this->commune_id = $this->communes->first()->id;
+            }
+        } else {
+            $this->commune_id = null;
+        }
+
+        // Tải commune sau khi cập nhật commune_id
+        $this->loadCommune();
+    }
+
+    protected function loadCommune(): void
+    {
+        if ($this->commune_id !== null) {
+            $this->commune = Commune::query()
+                ->with('district')
+                ->select('ten_xa', 'district_id', 'lat', 'lon')
+                ->where('id', $this->commune_id)
+                ->first();
+        } else {
+            $this->commune = null;
+        }
     }
 
     public function render(WeatherForecastService $weatherForecastService): View
     {
+        $currentForecast = $this->commune ? Cache::remember('sidebar-current-' . $this->commune_id, 900, function () use ($weatherForecastService) {
+            return $weatherForecastService->getCurrent($this->commune->only('lat', 'lon'));
+        }) : null;
+        
+        $dailyForecast = $this->commune ? Cache::remember('sidebar-daily-' . $this->commune_id, 900, function () use ($weatherForecastService) {
+            return $weatherForecastService->getDaily($this->commune->only('lat', 'lon'));
+        }) : null;
+    
         return view('livewire.web.aside.weather-forecast', [
-            'currentForecast' => cache()->remember('sidebar-current-'.$this->commune_id, 900, function () use ($weatherForecastService) {
-                return $weatherForecastService->getCurrent($this->commune->only('lat', 'lon'));
-            }),
-            'dailyForecast' => cache()->remember('sidebar-daily-'.$this->commune_id, 900, function () use ($weatherForecastService) {
-                return $weatherForecastService->getDaily($this->commune->only('lat', 'lon'));
-            }),
+            'currentForecast' => $currentForecast,
+            'dailyForecast' => $dailyForecast,
         ]);
     }
 
