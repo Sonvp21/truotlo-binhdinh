@@ -1,9 +1,9 @@
 <div>
     <div class="z-20 bg-white shadow-[6px_0_6px_-7px_#333]" style="    height: -webkit-fill-available;">
         <div x-cloak :class="sidebar || '-ml-80 hidden'"
-            class="z-20 w-[26rem] flex-none overflow-y-scroll overscroll-contain transition-all ease-in-out">
+            class="z-20 w-[23rem] flex-none overflow-y-scroll overscroll-contain transition-all ease-in-out">
             <div class="flex h-16 items-center justify-between px-4">
-                <h2 class="text-2xl font-bold">Bản đồ điểm nguy cơ trượt lở</h2>
+                <h2 class="text-2xl font-bold" style="width: max-content;">BẢN ĐỒ <br> Điểm nguy cơ trượt lở</h2>
                 <div x-on:click="sidebar = ! sidebar" class="cursor-pointer rounded bg-slate-50 hover:bg-slate-200">
                     {{ svg('heroicon-o-chevron-left', 'size-5') }}
                 </div>
