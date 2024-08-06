@@ -14,6 +14,75 @@ class ForecastRecordController extends Controller
         $records = ForecastRecord::latest()->paginate(10);
         return view('admin.records.index', ['records' => $records]);
     }
+    public function storeFromJson(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:json',
+        ]);
+
+        $file = $request->file('file');
+        $data = json_decode(file_get_contents($file), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json([
+                'error' => 'Tệp JSON không hợp lệ.',
+            ], 422); // Unprocessable Entity
+        }
+
+        $validator = Validator::make($data, [
+            'Nam' => 'required|integer|min:1900|max:2100',
+            'Thang' => 'required|integer|between:1,12',
+            'Ngay' => 'required|integer|between:1,31',
+            'Gio' => 'required|integer|between:0,23',
+            'Cac_diem' => 'required|array|min:1',
+            'Cac_diem.*.ten_diem' => 'required|string|max:6',
+            'Cac_diem.*.vi_tri' => 'required|string',
+            'Cac_diem.*.kinh_do' => 'required|numeric',
+            'Cac_diem.*.vi_do' => 'required|numeric',
+            'Cac_diem.*.tinh' => 'required|string',
+            'Cac_diem.*.huyen' => 'required|string',
+            'Cac_diem.*.xa' => 'required|string',
+            'Cac_diem.*.nguy_co' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422); // Unprocessable Entity
+        }
+
+        try {
+            $record = ForecastRecord::create([
+                'nam' => $data['Nam'],
+                'thang' => $data['Thang'],
+                'ngay' => $data['Ngay'],
+                'gio' => $data['Gio'],
+            ]);
+
+            foreach ($data['Cac_diem'] as $pointData) {
+                $record->points()->create([
+                    'ten_diem' => $pointData['ten_diem'],
+                    'vi_tri' => $pointData['vi_tri'],
+                    'kinh_do' => $pointData['kinh_do'],
+                    'vi_do' => $pointData['vi_do'],
+                    'tinh' => $pointData['tinh'],
+                    'huyen' => $pointData['huyen'],
+                    'xa' => $pointData['xa'],
+                    'nguy_co' => $pointData['nguy_co'],
+                ]);
+            }
+
+            return response()->json([
+                'success' => 'Cảnh báo đã được lưu thành công từ JSON',
+                'redirectUrl' => route('admin.records.index') // URL để chuyển hướng
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'error' => 'Đã xảy ra lỗi khi lưu dữ liệu.'
+            ], 500); // Internal Server Error
+        }
+    }
 
     public function index()
     {
@@ -147,82 +216,6 @@ class ForecastRecordController extends Controller
         }
     }
 
-
-
-
-
-    public function storeFromJson(Request $request)
-    {
-        $request->validate([
-            'file' => 'required|file|mimes:json',
-        ]);
-
-        $file = $request->file('file');
-        $data = json_decode(file_get_contents($file), true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return response()->json([
-                'error' => 'Tệp JSON không hợp lệ.',
-            ], 422); // Unprocessable Entity
-        }
-
-        $validator = Validator::make($data, [
-            'Nam' => 'required|integer|min:1900|max:2100',
-            'Thang' => 'required|integer|between:1,12',
-            'Ngay' => 'required|integer|between:1,31',
-            'Gio' => 'required|integer|between:0,23',
-            'Cac_diem' => 'required|array|min:1',
-            'Cac_diem.*.ten_diem' => 'required|string|max:6',
-            'Cac_diem.*.vi_tri' => 'required|string',
-            'Cac_diem.*.kinh_do' => 'required|numeric',
-            'Cac_diem.*.vi_do' => 'required|numeric',
-            'Cac_diem.*.tinh' => 'required|string',
-            'Cac_diem.*.huyen' => 'required|string',
-            'Cac_diem.*.xa' => 'required|string',
-            'Cac_diem.*.nguy_co' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422); // Unprocessable Entity
-        }
-
-        try {
-            $record = ForecastRecord::create([
-                'nam' => $data['Nam'],
-                'thang' => $data['Thang'],
-                'ngay' => $data['Ngay'],
-                'gio' => $data['Gio'],
-            ]);
-
-            foreach ($data['Cac_diem'] as $pointData) {
-                $record->points()->create([
-                    'ten_diem' => $pointData['ten_diem'],
-                    'vi_tri' => $pointData['vi_tri'],
-                    'kinh_do' => $pointData['kinh_do'],
-                    'vi_do' => $pointData['vi_do'],
-                    'tinh' => $pointData['tinh'],
-                    'huyen' => $pointData['huyen'],
-                    'xa' => $pointData['xa'],
-                    'nguy_co' => $pointData['nguy_co'],
-                ]);
-            }
-
-            return response()->json([
-                'success' => 'Cảnh báo đã được lưu thành công từ JSON',
-                'redirectUrl' => route('admin.records.index') // URL để chuyển hướng
-            ]);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json([
-                'error' => 'Đã xảy ra lỗi khi lưu dữ liệu.'
-            ], 500); // Internal Server Error
-        }
-    }
-
-
-
     public function update(Request $request, $id)
     {
         $data = $request->validate([
@@ -269,7 +262,6 @@ class ForecastRecordController extends Controller
 
         return response()->json(['message' => 'Record updated successfully'], 200);
     }
-
 
     public function destroy($id)
     {

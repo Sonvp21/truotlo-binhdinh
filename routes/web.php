@@ -6,6 +6,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FlashReportController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TestApiController;
 use App\Livewire\Web\Home;
 use Illuminate\Support\Facades\Route;
 
@@ -37,5 +38,9 @@ Route::get('/ban-do', [MapController::class, 'index'])->name('map');
 Route::get('/ban-do/{layer}.geojson', [MapController::class, 'layer']);
 
 Route::get('/map/landslide/info/{id}', [MapController::class, 'getLandslides'])->name('map.landslide.info');
+
+
+///test post data api
+Route::get('binhdinh/du_bao_5_ngay_sample_value', [TestApiController::class, 'duBao5Ngay']);
 
 require __DIR__.'/admin.php';
