@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 class FetchAndStoreForecastData extends Command
 {
     protected $signature = 'fetch:forecast-data';
+    // import in app/Console/Kernel.php and run php artisan fetch:forecast-data
     protected $description = 'Fetch forecast data from API and store it in the database';
 
     public function __construct()
@@ -20,7 +21,7 @@ class FetchAndStoreForecastData extends Command
     public function handle()
     {
         // URL của API
-        $url = 'http://truotlo-binhdinh.test/binhdinh/du_bao_5_ngay_sample_value';
+        $url = 'http://truotlobinhdinh.girc.edu.vn/binhdinh/du_bao_5_ngay_sample_value';
 
         // Lấy dữ liệu từ API
         $response = Http::get($url);

@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('fetch:forecast-data')->hourly();
+        $schedule->command('fetch:fetch-sample-forecast-record-data')->hourly();
     }
 
     /**

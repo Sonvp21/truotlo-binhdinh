@@ -42,5 +42,5 @@ Route::get('/map/landslide/info/{id}', [MapController::class, 'getLandslides'])-
 
 ///test post data api
 Route::get('binhdinh/du_bao_5_ngay_sample_value', [TestApiController::class, 'duBao5Ngay']);
-
+Route::get('/binhdinh/canh_bao_gio_sample_value', [TestApiController::class, 'canhBaoGio']);
 require __DIR__.'/admin.php';
